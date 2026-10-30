@@ -1,0 +1,1252 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Marbella CRM</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#0F6B57">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Marbella CRM">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: nav rail + working area on desktop; bottom tab bar + one screen at a time on phones. */
+:root {
+  --bg: #F2F5F3; --surface: #FFFFFF; --sunk: #E8EDEA; --ink: #14201B; --muted: #5B6A63; --line: #D8E0DC;
+  --accent: #0F6B57; --accent-soft: #DCEEE7; --accent-ink: #FFFFFF;
+  --red: #C0402C; --red-soft: #F8E1DC; --amber: #A86A12; --amber-soft: #F6E9D2; --green: #2E7D55; --green-soft: #DDF0E5;
+  --wa: #1FA855; --bubble-in: #FFFFFF; --bubble-out: #D9F5DF; --chat-bg: #E9E4DA;
+  --display: "Bricolage Grotesque", "Avenir Next", system-ui, sans-serif;
+  --body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --r: 16px;
+  --shadow: 0 1px 2px rgba(16,32,26,.05), 0 8px 24px -12px rgba(16,32,26,.14);
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.6);
+  --bg: #0E1412; --surface: #16201C; --sunk: #1C2723; --ink: #E4ECE8; --muted: #93A39C; --line: #27332F;
+  --accent: #3FB394; --accent-soft: #173A31; --accent-ink: #05110D;
+  --red: #F07B65; --red-soft: #3A1F1A; --amber: #E2AA4C; --amber-soft: #36290F; --green: #5DC48D; --green-soft: #15301F;
+  --wa: #35C46C; --bubble-in: #1F2A26; --bubble-out: #144431; --chat-bg: #111917; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.6);
+  --bg: #0E1412; --surface: #16201C; --sunk: #1C2723; --ink: #E4ECE8; --muted: #93A39C; --line: #27332F;
+  --accent: #3FB394; --accent-soft: #173A31; --accent-ink: #05110D;
+  --red: #F07B65; --red-soft: #3A1F1A; --amber: #E2AA4C; --amber-soft: #36290F; --green: #5DC48D; --green-soft: #15301F;
+  --wa: #35C46C; --bubble-in: #1F2A26; --bubble-out: #144431; --chat-bg: #111917; color-scheme: dark }
+
+html, body { height: 100%; }
+body { background: var(--bg); color: var(--ink); font: 14px/1.5 var(--body); }
+* { box-sizing: border-box; }
+button { font: inherit; color: inherit; cursor: pointer; }
+button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+h1, h2, h3 { font-family: var(--display); font-weight: 700; margin: 0; text-wrap: balance; letter-spacing: -0.01em; }
+.mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.muted { color: var(--muted); }
+.label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); font-weight: 600; }
+
+.app { display: grid; grid-template-columns: 208px 1fr; height: 100%; }
+.rail { background: var(--surface); border-right: 1px solid var(--line); display: flex; flex-direction: column; gap: 4px; padding-block: 20px; padding-inline: 14px; }
+.brand { display: flex; align-items: baseline; gap: 8px; padding: 0 8px 18px; }
+.brand b { font-family: var(--display); font-size: 18px; white-space: nowrap; }
+.demo-tag { font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--amber); background: var(--amber-soft); padding: 2px 6px; border-radius: 4px; }
+.nav { display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: 8px; border: 0; background: none; text-align: left; color: var(--muted); font-weight: 500; text-decoration: none; }
+.nav svg { width: 18px; height: 18px; flex: none; }
+.nav:hover { background: var(--sunk); color: var(--ink); }
+.nav[aria-current="page"] { background: var(--accent-soft); color: var(--accent); }
+.nav .count { margin-left: auto; font-size: 11px; background: var(--red); color: #fff; border-radius: 99px; padding: 0 7px; font-weight: 600; }
+.rail-foot { margin-top: auto; padding: 12px 8px 0; border-top: 1px solid var(--line); display: grid; gap: 8px; font-size: 12px; }
+.agent-mini { display: flex; gap: 10px; align-items: center; }
+.avatar { width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; font-weight: 600; font-size: 12px; background: var(--accent-soft); color: var(--accent); flex: none; }
+.linkbtn { border: 0; background: none; padding: 0; color: var(--accent); font-weight: 500; text-align: left; }
+
+main { min-width: 0; overflow: auto; }
+.page { padding-block: 24px 40px; padding-left: max(24px, env(safe-area-inset-left, 0px)); padding-right: max(24px, env(safe-area-inset-right, 0px)); }
+.page-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 18px; }
+.page-head h1 { font-size: 26px; }
+.page-head p { margin: 2px 0 0; color: var(--muted); }
+
+.btn { text-decoration: none; color: var(--ink); display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); background: var(--surface); padding: 7px 12px; border-radius: 8px; font-weight: 500; white-space: nowrap; }
+.btn:hover { border-color: var(--muted); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.btn.primary:hover { filter: brightness(1.08); }
+.btn.wa { background: var(--wa); border-color: var(--wa); color: #fff; }
+.btn.small { padding: 4px 9px; font-size: 12px; }
+.btn svg { width: 15px; height: 15px; }
+
+.pill { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 99px; background: var(--sunk); color: var(--muted); white-space: nowrap; }
+.pill.red { background: var(--red-soft); color: var(--red); }
+.pill.amber { background: var(--amber-soft); color: var(--amber); }
+.pill.green { background: var(--green-soft); color: var(--green); }
+.pill.accent { background: var(--accent-soft); color: var(--accent); }
+.dot { width: 8px; height: 8px; border-radius: 50%; background: var(--red); display: inline-block; flex: none; }
+
+/* Hotlist */
+.split { display: grid; grid-template-columns: minmax(300px, 400px) 1fr; height: 100%; }
+.list-col { border-right: 1px solid var(--line); overflow: auto; background: var(--surface); }
+.list-col .page-head { padding: 22px 20px 0; margin-bottom: 8px; }
+.list-col .page-head h1 { font-size: 24px; }
+.horizon { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); padding: 0 20px 12px; }
+.horizon select { font: inherit; border: 1px solid var(--line); background: var(--surface); border-radius: 6px; padding: 2px 4px; }
+.group { padding: 12px 0 4px; }
+.group-head { display: flex; align-items: center; gap: 8px; padding: 0 20px 6px; }
+.group-head h2 { font-size: 13px; font-family: var(--body); font-weight: 600; }
+.group-head .n { font-size: 12px; color: var(--muted); }
+.stripe { width: 3px; height: 14px; border-radius: 2px; }
+.row { display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; padding: 10px 20px; border: 0; background: none; text-align: left; width: 100%; border-top: 1px solid var(--line); }
+.row:hover { background: var(--sunk); }
+.row[aria-current="true"] { background: var(--accent-soft); }
+.row .name { font-weight: 600; display: flex; gap: 6px; align-items: center; min-width: 0; }
+.row .name span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.row .why { grid-column: 1 / -1; font-size: 12.5px; color: var(--ink); }
+.row .meta { grid-column: 1 / -1; display: flex; gap: 6px; flex-wrap: wrap; align-items: center; font-size: 12px; color: var(--muted); }
+.handled { padding: 9px 20px; border-top: 1px solid var(--line); display: grid; grid-template-columns: 18px 1fr; gap: 8px; font-size: 12.5px; }
+.handled svg { width: 16px; height: 16px; color: var(--green); margin-top: 2px; }
+.handled b { font-weight: 600; }
+.handled .t { font-size: 11.5px; color: var(--muted); }
+.empty { padding: 14px 20px; color: var(--muted); font-size: 12.5px; border-top: 1px solid var(--line); }
+.detail-col { overflow: auto; min-width: 0; }
+
+/* Client */
+.client { padding-block: 22px 40px; padding-left: max(24px, env(safe-area-inset-left, 0px)); padding-right: max(24px, env(safe-area-inset-right, 0px)); display: grid; gap: 18px; max-width: 980px; }
+.client-top { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; align-items: flex-start; }
+.client-top h1 { font-size: 28px; }
+.client-sub { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; color: var(--muted); margin-top: 4px; font-size: 13px; }
+.back { display: none; }
+.next { background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--accent); border-radius: var(--r); padding: 18px 20px; display: grid; gap: 10px; }
+.next.overdue { border-left-color: var(--red); }
+.next-main { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; align-items: flex-end; }
+.next h2 { font-size: 22px; line-height: 1.25; max-width: 32ch; }
+.next .when { font-family: var(--mono); font-size: 13px; color: var(--muted); }
+.next .when b { color: var(--ink); font-weight: 500; }
+.next.overdue .when b { color: var(--red); }
+.next-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.next .ev { font-size: 12px; color: var(--muted); }
+.inline-form { display: grid; gap: 8px; background: var(--sunk); padding: 12px; border-radius: 8px; }
+.inline-form .f { display: flex; gap: 8px; flex-wrap: wrap; }
+.inline-form input, .inline-form select { font: inherit; border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 6px; padding: 6px 8px; min-width: 0; }
+.inline-form input[type=text] { flex: 1 1 220px; }
+.cols { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 16px 18px; display: grid; gap: 12px; min-width: 0; }
+.panel h3 { font-size: 15px; font-family: var(--body); font-weight: 600; }
+.panel-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.chips { display: flex; gap: 6px; flex-wrap: wrap; }
+.chip { border: 1px solid var(--line); background: var(--sunk); padding: 4px 10px; border-radius: 99px; font-size: 12.5px; font-weight: 500; }
+.chip.new { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); }
+.match { display: grid; grid-template-columns: 72px 1fr auto; gap: 12px; align-items: center; }
+.match .ph { width: 72px; height: 54px; border-radius: 6px; }
+.match .t { font-weight: 600; font-size: 13px; }
+.match .s { font-size: 12px; color: var(--muted); }
+.timeline { display: grid; gap: 0; }
+.tl { display: grid; grid-template-columns: 28px 1fr; gap: 10px; padding: 10px 0; border-top: 1px solid var(--line); }
+.tl:first-child { border-top: 0; }
+.tl .ic { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; background: var(--sunk); color: var(--muted); }
+.tl .ic svg { width: 15px; height: 15px; }
+.tl .ic.wa { background: var(--green-soft); color: var(--wa); }
+.tl .ic.sys { background: var(--accent-soft); color: var(--accent); }
+.tl .what { font-weight: 600; font-size: 13px; display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.tl .quote { font-size: 12.5px; color: var(--muted); margin-top: 2px; }
+.tl .foot { display: flex; gap: 10px; align-items: center; font-size: 11.5px; color: var(--muted); margin-top: 4px; flex-wrap: wrap; }
+
+/* Funnel */
+.board { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(200px, 1fr); gap: 12px; overflow-x: auto; padding-bottom: 8px; }
+.col { background: var(--sunk); border-radius: var(--r); padding: 10px; display: flex; flex-direction: column; gap: 8px; min-height: 320px; }
+.col.over { outline: 2px dashed var(--accent); outline-offset: -2px; }
+.col-head { display: flex; justify-content: space-between; align-items: center; padding: 2px 4px 4px; }
+.col-head h2 { font-size: 13px; font-family: var(--body); font-weight: 600; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 10px; display: grid; gap: 4px; text-align: left; cursor: grab; }
+.card:active { cursor: grabbing; }
+.card .n { font-weight: 600; font-size: 13px; display: flex; gap: 6px; align-items: center; justify-content: space-between; }
+.card .s { font-size: 12px; color: var(--muted); }
+.card .d { font-size: 11.5px; font-family: var(--mono); color: var(--muted); }
+
+/* Listings */
+.listing-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+.listing { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; display: grid; }
+.listing .ph { height: 150px; }
+.listing .body { padding: 14px 16px; display: grid; gap: 8px; }
+.listing .price { font-family: var(--display); font-size: 20px; font-weight: 700; }
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; border-top: 1px solid var(--line); padding-top: 10px; }
+.stat b { display: block; font-family: var(--mono); font-size: 16px; font-weight: 500; }
+.stat span { font-size: 11px; color: var(--muted); }
+
+/* Photo placeholders */
+.ph { position: relative; overflow: hidden; background: var(--sunk); }
+.ph img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+.ph::after { z-index: 1; }
+.ph::after { content: attr(data-cap); position: absolute; left: 8px; bottom: 6px; font-size: 10px; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,.5); font-weight: 500; }
+
+/* Sheet */
+.sheet-wrap { display: grid; grid-template-columns: minmax(0, 420px) minmax(0, 1fr); gap: 32px; align-items: start; }
+.phone { background: #0B0F0D; border-radius: 34px; padding: 10px; box-shadow: 0 20px 50px -20px rgba(0,0,0,.45); max-width: 420px; }
+.phone-screen { background: #FFFFFF; color: #1A1A1A; border-radius: 26px; overflow: hidden; max-height: 760px; overflow-y: auto; }
+.ms-cover { height: 250px; }
+.ms { padding: 18px 20px 24px; display: grid; gap: 14px; font-family: var(--body); }
+.ms .price { font-family: var(--display); font-size: 28px; font-weight: 700; color: #111; }
+.ms .area { color: #555; font-size: 14px; margin-top: -10px; }
+.facts { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid #E6E6E6; border-bottom: 1px solid #E6E6E6; padding: 10px 0; text-align: center; }
+.facts b { display: block; font-size: 16px; font-family: var(--mono); font-weight: 500; color: #111; }
+.facts span { font-size: 10.5px; color: #666; text-transform: uppercase; letter-spacing: .06em; }
+.ms p { margin: 0; line-height: 1.6; color: #2A2A2A; }
+.grid-ph { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
+.grid-ph .ph { height: 110px; border-radius: 4px; }
+.ms-map { border-radius: 8px; overflow: hidden; background: #DCEBF2; }
+.agent-card { display: grid; grid-template-columns: 48px 1fr; gap: 12px; align-items: center; border: 1px solid #E6E6E6; border-radius: 12px; padding: 12px; }
+.agent-card .avatar { width: 48px; height: 48px; background: #E5EFEB; color: #0F6B57; font-size: 15px; }
+.agent-card .wa-btn { grid-column: 1 / -1; display: flex; justify-content: center; align-items: center; gap: 8px; background: #1FA855; color: #fff; border: 0; border-radius: 10px; padding: 11px; font-weight: 600; }
+.ref { font-family: var(--mono); font-size: 11.5px; color: #777; text-align: center; }
+.sheet-side { display: grid; gap: 14px; }
+.langs-app { display: flex; gap: 4px; flex-wrap: wrap; }
+.ms-for { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: #777; font-weight: 600; }
+.ms-hl { display: flex; flex-wrap: wrap; gap: 6px; }
+.ms-hl span { font-size: 12px; font-weight: 500; color: #222; background: #F1F3F2; border-radius: 99px; padding: 4px 10px; }
+.ms-note { background: #F6F7F6; border-radius: 10px; padding: 12px 14px; font-size: 14px; line-height: 1.5; color: #222; }
+.ms-facts { display: grid; grid-template-columns: 1fr 1fr; gap: 0 16px; margin: 0; border-top: 1px solid #E6E6E6; }
+.ms-facts div { display: flex; justify-content: space-between; gap: 8px; padding: 8px 0; border-bottom: 1px solid #EFEFEF; font-size: 12.5px; }
+.ms-facts dt { color: #777; }
+.ms-facts dd { margin: 0; color: #111; font-weight: 500; text-align: right; }
+.ms-note-h { font-size: 11px; font-weight: 600; color: #777; margin-bottom: 4px; }
+
+/* Send sheet composer */
+.compose { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 400px); gap: 28px; align-items: start; }
+.q-panel { gap: 18px; padding: 20px 22px; }
+.stepper { list-style: none; margin: 0; padding: 0; display: flex; gap: 6px; flex-wrap: wrap; }
+.stepper button { display: flex; align-items: center; gap: 6px; border: 1px solid var(--line); background: var(--surface); border-radius: 99px; padding: 4px 10px 4px 4px; font-size: 12px; color: var(--muted); }
+.stepper button svg { width: 12px; height: 12px; }
+.stepper li.on button { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); font-weight: 600; }
+.stepper li.done button { color: var(--ink); }
+.stepper button:disabled { opacity: .55; cursor: default; }
+.q { display: grid; gap: 10px; }
+.q h2 { font-size: 22px; }
+.q p { margin: 0; }
+.opts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+.opt { border: 1px solid var(--line); background: var(--surface); border-radius: 10px; padding: 9px 14px; font-weight: 500; text-align: left; }
+.opt:hover { border-color: var(--muted); }
+.opt[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); }
+.opt-tag { font-size: 10.5px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; opacity: .75; margin-left: 4px; }
+.cover-opts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 4px; }
+.cover-opt { border: 2px solid transparent; border-radius: 10px; padding: 0; overflow: hidden; background: none; }
+.cover-opt .ph { height: 84px; }
+.cover-opt[aria-pressed="true"] { border-color: var(--accent); }
+.q textarea { font: inherit; width: 100%; border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 8px; padding: 10px 12px; resize: vertical; }
+.q textarea:disabled { opacity: .5; }
+.check { display: flex; gap: 8px; align-items: center; font-size: 13px; color: var(--muted); }
+.q-nav { display: flex; justify-content: space-between; gap: 8px; border-top: 1px solid var(--line); padding-top: 14px; }
+.chat.wa-preview { min-height: 0; }
+.link-card { display: grid; grid-template-columns: 64px 1fr; gap: 10px; align-items: center; background: var(--surface); border-radius: 8px; padding: 6px; font-size: 12.5px; }
+.link-card .ph { height: 48px; border-radius: 6px; }
+.preview-col { display: grid; gap: 8px; position: sticky; top: 16px; }
+.preview-col .phone-screen { max-height: 680px; }
+
+/* Chat (add property + simulator) */
+.chat-layout { display: grid; grid-template-columns: minmax(0, 520px) minmax(0, 1fr); gap: 24px; align-items: start; }
+.chat { background: var(--chat-bg); border-radius: var(--r); padding: 16px; display: flex; flex-direction: column; gap: 10px; min-height: 420px; }
+.b { max-width: 85%; padding: 8px 11px; border-radius: 10px; font-size: 13.5px; box-shadow: 0 1px 1px rgba(0,0,0,.08); display: grid; gap: 6px; }
+.b.in { background: var(--bubble-in); align-self: flex-start; border-top-left-radius: 2px; }
+.b.out { background: var(--bubble-out); align-self: flex-end; border-top-right-radius: 2px; }
+.b .who { font-size: 11.5px; font-weight: 600; color: var(--accent); }
+.b .ts { font-size: 10.5px; color: var(--muted); justify-self: end; font-family: var(--mono); }
+.b.sys { background: var(--surface); border: 1px solid var(--line); align-self: stretch; max-width: none; box-shadow: none; }
+.thumbs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; }
+.thumbs .ph { height: 64px; border-radius: 4px; }
+.thumbs .ph.cover { outline: 3px solid var(--accent); outline-offset: -3px; }
+.thumbs .ph.bad { filter: blur(1.5px) grayscale(.5); opacity: .55; }
+.replies { display: flex; gap: 6px; flex-wrap: wrap; }
+.replies .btn { border-radius: 99px; }
+.interp { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; font-size: 13px; }
+.interp dt { color: var(--muted); }
+.interp dd { margin: 0; font-weight: 500; }
+.applied { display: grid; gap: 6px; font-size: 13px; margin: 0; padding: 0; list-style: none; }
+.applied li { display: flex; gap: 8px; }
+.applied svg { width: 16px; height: 16px; color: var(--green); flex: none; margin-top: 2px; }
+.voice { display: flex; gap: 8px; align-items: center; font-size: 12px; color: var(--muted); }
+.voice .wave { flex: 1; height: 18px; background: repeating-linear-gradient(90deg, var(--muted) 0 2px, transparent 2px 5px); mask: linear-gradient(90deg, #000 70%, transparent); opacity: .5; border-radius: 2px; }
+.steps { display: flex; gap: 6px; }
+.steps span { width: 22px; height: 4px; border-radius: 2px; background: var(--line); }
+.steps span.on { background: var(--accent); }
+
+.toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(24px + env(safe-area-inset-bottom, 0px)); background: var(--ink); color: var(--bg); padding: 10px 16px; border-radius: 8px; font-weight: 500; z-index: 50; box-shadow: 0 8px 24px rgba(0,0,0,.2); max-width: calc(100% - 32px); }
+
+/* Phone layout */
+/* Modern finish */
+.av { --h: 158; width: 30px; height: 30px; border-radius: 50%; display: inline-grid; place-items: center; flex: none; font-size: 11.5px; font-weight: 600;
+  background: hsl(var(--h) 55% 90%); color: hsl(var(--h) 45% 28%); }
+:root[data-theme="dark"] .av { background: hsl(var(--h) 30% 22%); color: hsl(var(--h) 60% 80%); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .av { background: hsl(var(--h) 30% 22%); color: hsl(var(--h) 60% 80%); } }
+.av.sm { width: 22px; height: 22px; font-size: 9.5px; }
+.av.lg { width: 52px; height: 52px; font-size: 18px; }
+.who { display: flex; align-items: center; gap: 14px; }
+.row { grid-template-columns: 1fr auto; padding: 12px 20px; border-top: 0; border-radius: 12px; margin: 2px 8px; width: calc(100% - 16px); transition: background .15s; }
+.row .name { gap: 10px; }
+.row .why, .row .meta { padding-left: 40px; }
+.list-col { background: var(--bg); }
+.group { padding-top: 16px; }
+.handled { border-top: 0; margin: 0 8px; border-radius: 12px; }
+.empty { border-top: 0; }
+.panel, .next, .listing { border-color: transparent; box-shadow: var(--shadow); }
+.next { border-left-width: 0; position: relative; overflow: hidden; }
+.next::before { content: ""; position: absolute; inset: 0 auto 0 0; width: 5px; background: var(--accent); }
+.next.overdue::before { background: var(--red); }
+.card { border-color: transparent; box-shadow: var(--shadow); border-radius: 12px; padding: 12px; transition: transform .15s, box-shadow .15s; }
+.card:hover { transform: translateY(-1px); }
+.card .n-l { display: inline-flex; align-items: center; gap: 8px; }
+.col { border-radius: 16px; }
+.btn { border-radius: 10px; transition: filter .15s, border-color .15s, background .15s; }
+.pill { padding: 3px 9px; }
+.listing { overflow: hidden; }
+.listing .ph { height: 190px; }
+.match .ph { width: 84px; height: 62px; border-radius: 10px; }
+.match { grid-template-columns: 84px 1fr auto; }
+.grid-ph .ph { height: 120px; border-radius: 8px; }
+.thumbs .ph, .cover-opt .ph, .link-card .ph { border-radius: 8px; }
+.phone { border-radius: 40px; }
+.phone-screen { border-radius: 32px; }
+.ms-cover { height: 280px; }
+.ms-cover::before { content: ""; position: absolute; inset: auto 0 0 0; height: 40%; background: linear-gradient(transparent, rgba(0,0,0,.25)); z-index: 1; }
+main > * { animation: fadein .18s ease-out; }
+@keyframes fadein { from { opacity: .6; transform: translateY(4px); } }
+@media (prefers-reduced-motion: reduce) { main > * { animation: none; } .card:hover { transform: none; } }
+
+@media (max-width: 820px) {
+  .app { grid-template-columns: 1fr; grid-template-rows: 1fr auto; }
+  .rail { order: 2; flex-direction: row; justify-content: space-around; border-right: 0; border-top: 1px solid var(--line); background: color-mix(in srgb, var(--surface) 82%, transparent); backdrop-filter: saturate(1.6) blur(18px); -webkit-backdrop-filter: saturate(1.6) blur(18px); padding-block: 6px calc(6px + env(safe-area-inset-bottom, 0px)); padding-left: max(8px, env(safe-area-inset-left, 0px)); padding-right: max(8px, env(safe-area-inset-right, 0px)); gap: 0; }
+  .brand, .rail-foot, .nav .count { display: none; }
+  .nav { flex-direction: column; gap: 2px; font-size: 10.5px; padding: 6px 4px; flex: 1; align-items: center; position: relative; }
+  .nav[aria-current="page"] { background: none; }
+  .nav[aria-current="page"] svg { background: var(--accent-soft); border-radius: 99px; padding: 3px 14px; width: 48px; height: 26px; box-sizing: border-box; }
+  .nav .mdot { position: absolute; top: 4px; right: calc(50% - 16px); }
+  .page, .client { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  .split { grid-template-columns: 1fr; }
+  .split.has-detail .list-col { display: none; }
+  .split:not(.has-detail) .detail-col { display: none; }
+  .list-col { border-right: 0; }
+  .back { display: inline-flex; }
+  .cols, .sheet-wrap, .chat-layout, .compose { grid-template-columns: 1fr; }
+  .preview-col { position: static; }
+  .cover-opts { grid-template-columns: repeat(2, 1fr); }
+  .board { grid-auto-columns: 86%; scroll-snap-type: x mandatory; }
+  .col { scroll-snap-align: start; }
+  .phone { padding: 0; background: none; box-shadow: none; }
+  .phone-screen { border-radius: var(--r); max-height: none; border: 1px solid var(--line); }
+}
+@media (min-width: 821px) { .nav .mdot { display: none; } }
+@media (prefers-reduced-motion: no-preference) { .toast { animation: rise .2s ease-out; } @keyframes rise { from { opacity: 0; transform: translate(-50%, 8px); } } }
+</style>
+
+</head>
+<body>
+<div class="app">
+  <nav class="rail" id="rail" aria-label="Main"></nav>
+  <main id="main"></main>
+</div>
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script>
+// ---------- Demo clock and helpers ----------
+const NOW = new Date("2026-10-28T10:30:00");
+const DAY = 864e5;
+const d = s => new Date(s.length === 10 ? s + "T12:00:00" : s);
+const daysBetween = (a, b) => Math.round((d(iso(b)) - d(iso(a))) / DAY);
+const pad = n => String(n).padStart(2, "0");
+const iso = x => { const t = x instanceof Date ? x : d(x); return `${t.getFullYear()}-${pad(t.getMonth() + 1)}-${pad(t.getDate())}`; };
+const addDays = n => iso(new Date(NOW.getTime() + n * DAY));
+const fmtDay = s => {
+  const n = daysBetween(NOW, s);
+  if (n === 0) return "Today";
+  if (n === 1) return "Tomorrow";
+  if (n === -1) return "Yesterday";
+  return d(s).toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" });
+};
+const fmtWhen = s => {
+  const dt = d(s);
+  return fmtDay(iso(dt)) + (s.length > 10 ? " " + dt.toTimeString().slice(0, 5) : "");
+};
+const money = n => "€" + n.toLocaleString("en-GB");
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const initials = n => n.split(/[ &]+/).filter(Boolean).map(w => w[0]).slice(0, 2).join("");
+const HUES = [158, 200, 24, 280, 340, 45, 220, 120];
+const avatar = (c, size = "") => `<span class="av ${size}" style="--h:${HUES[c.name.length % HUES.length]}">${esc(initials(c.name))}</span>`;
+
+const STAGES = [
+  ["new_lead", "New lead"], ["searching", "Searching"], ["viewing", "Viewing"], ["offer", "Offer"],
+  ["reservation", "Reservation"], ["arras", "Arras / Completion"], ["parked", "Parked"],
+];
+const stageName = k => STAGES.find(s => s[0] === k)[1];
+const ROLE = { buyer: "Buyer", seller: "Seller", agent: "Agent (co-broke)" };
+
+const ICON = {
+  hot: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c1 4 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3 2-4 0 2 1 3 2 3 0-4-1-6 1-9z"/></svg>',
+  funnel: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="5" height="16" rx="1"/><rect x="10" y="4" width="5" height="11" rx="1"/><rect x="17" y="4" width="4" height="7" rx="1"/></svg>',
+  home: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg>',
+  plus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>',
+  play: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 20l1.3-3.9A8 8 0 1 1 8 19z"/><path d="M10 9l5 3-5 3z" fill="currentColor"/></svg>',
+  wa: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 20l1.3-3.9A8 8 0 1 1 8 19z"/></svg>',
+  mic: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>',
+  eye: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>',
+  cal: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>',
+  mail: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>',
+  sys: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/></svg>',
+  check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg>',
+  back: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 5l-7 7 7 7"/></svg>',
+};
+
+// Painted photo placeholders: sky, sea or hillside, a white villa block.
+const PALETTES = [
+  ["#8EC5E8", "#D9EEF7", "#2F7FA8", "#E9E2D3"], ["#F2B880", "#F7DDBF", "#4A86A8", "#E4D7C3"],
+  ["#9DD3C8", "#E3F3EE", "#6B8F5A", "#EFE8DA"], ["#A9B8E8", "#E6EAF8", "#3D6E8F", "#DDD3C4"],
+  ["#7FB7D9", "#CFE6F2", "#7D9A5C", "#F1ECE2"], ["#E8C27F", "#F6E6C8", "#3C7393", "#E7DCCB"],
+];
+function photo(seed, cap = "", cls = "") {
+  const [sky, haze, low, wall] = PALETTES[seed % PALETTES.length];
+  const x = 18 + (seed * 37) % 50, w = 30 + (seed * 13) % 22;
+  const bg = [
+    `linear-gradient(180deg, transparent 62%, ${low} 62%)`,
+    `linear-gradient(90deg, transparent ${x}%, ${wall} ${x}%, ${wall} ${x + w}%, transparent ${x + w}%) 0 46% / 100% 22% no-repeat`,
+    `linear-gradient(90deg, transparent ${x + 4}%, rgba(0,0,0,.18) ${x + 4}%, rgba(0,0,0,.18) ${x + 10}%, transparent ${x + 10}%, transparent ${x + w - 12}%, rgba(0,0,0,.18) ${x + w - 12}%, rgba(0,0,0,.18) ${x + w - 5}%, transparent ${x + w - 5}%) 0 51% / 100% 8% no-repeat`,
+    `radial-gradient(circle at ${80 - seed % 40}% 22%, rgba(255,255,255,.9) 0 5%, transparent 6%)`,
+    `linear-gradient(180deg, ${sky}, ${haze} 60%)`,
+  ].join(",");
+  const px = cls.includes("ms-cover") ? 900 : 480;
+  return `<div class="ph ${cls}" data-cap="${esc(cap)}" style="background:${bg}"><img src="${IMG(seed, px)}" alt="" loading="lazy" onerror="this.remove()"></div>`;
+}
+// Free Unsplash photos: exteriors first, interiors after. Painted gradient shows if an image cannot load.
+const PHOTOS = ["1660599197053-fe0aa8d5b3a4", "1512917774080-9991f1c4c750", "1600596542815-ffad4c1539a9", "1781555122236-4e004a9b5691",
+  "1780914149187-c4f302dafbb0", "1765999906700-2d4dfd392966", "1771371097061-3befd4b71b59", "1628744876497-eb30460be9f6",
+  "1598928506311-c55ded91a20c", "1752119491688-003aa88a1a46", "1620995611021-bfa0b4d7f43c", "1783125127015-bf513362480b"];
+const IMG = (seed, w) => `https://images.unsplash.com/photo-${PHOTOS[seed % PHOTOS.length]}?auto=format&fit=crop&w=${w}&q=70`;
+
+// ---------- Demo data ----------
+const AGENT = { name: "Jonathan", agency: "Exclusive agent · Marbella", phone: "+34 600 12 34 56" };
+
+const PROPS = {
+  R4512345: { ref: "R4512345", own: true, type: "villa", title: "South-facing family villa, Golf Valley", area: "Nueva Andalucía, Marbella", price: 2450000, beds: 5, baths: 4, built: 410, plot: 1300, seed: 0, opens: 23, clicks: 4,
+    year: 2008, reno: 2021, orient: "S", parking: 2, energy: "C", ibi: 3900, comm: 0, extras: ["underfloor", "aircon", "guest"], features: ["pool", "south", "walk", "golf", "ready"] },
+  R4601877: { ref: "R4601877", own: true, type: "townhouse", title: "Corner townhouse near the beach, San Pedro", area: "San Pedro de Alcántara", price: 1195000, beds: 4, baths: 3, built: 240, plot: 180, seed: 2, opens: 11, clicks: 2,
+    year: 2002, reno: 2023, orient: "SW", parking: 2, energy: "D", ibi: 1450, comm: 260, extras: ["aircon", "storage", "alarm"], features: ["beach", "gated", "roof", "walk", "garden"] },
+  R4588120: { ref: "R4588120", own: false, type: "villa", title: "Contemporary golf-view villa, Las Brisas", area: "Nueva Andalucía, Marbella", price: 2250000, beds: 4, baths: 4, built: 360, plot: 1100, seed: 1,
+    year: 2015, reno: 0, orient: "S", parking: 3, energy: "B", ibi: 3200, comm: 0, extras: ["underfloor", "aircon", "solar"], features: ["pool", "ready", "golf", "south"] },
+  R4630011: { ref: "R4630011", own: false, type: "villa", title: "Andalusian villa on a 2,400 m² plot, Guadalmina Alta", area: "Guadalmina Alta, San Pedro", price: 3100000, beds: 5, baths: 5, built: 480, plot: 2400, seed: 4, isNew: true,
+    year: 1998, reno: 2019, orient: "S", parking: 3, energy: "C", ibi: 4800, comm: 120, extras: ["guest", "gym", "underfloor", "alarm"], features: ["garden", "pool", "golf", "gated"] },
+  R4550932: { ref: "R4550932", own: false, type: "apartment", title: "Apartment near the marina, Puerto Banús", area: "Puerto Banús, Marbella", price: 1350000, beds: 3, baths: 2, built: 150, plot: 0, seed: 3,
+    year: 2005, reno: 2022, orient: "SE", parking: 1, energy: "C", ibi: 1900, comm: 690, extras: ["aircon", "storage", "concierge"], features: ["sea", "beach", "walk", "ready"] },
+  R4619004: { ref: "R4619004", own: false, type: "villa", title: "Family villa close to the beach, Guadalmina Baja", area: "Guadalmina Baja, San Pedro", price: 2690000, beds: 4, baths: 4, built: 330, plot: 1500, seed: 5,
+    year: 1985, reno: 2020, orient: "S", parking: 3, energy: "D", ibi: 3600, comm: 95, extras: ["aircon", "alarm", "solar"], features: ["beach", "pool", "garden", "golf"] },
+};
+const NEW_PROP = { ref: "R4644210", own: true, type: "villa", title: "Sea-view villa, El Paraíso Alto", area: "El Paraíso Alto, Benahavís", price: 2950000, beds: 5, baths: 4, built: 420, plot: 1850, seed: 5, opens: 0, clicks: 0,
+  year: 2006, reno: 2022, orient: "S", parking: 2, energy: "C", ibi: 3400, comm: 85, extras: ["underfloor", "aircon", "gym", "alarm"], features: ["sea", "pool", "golf", "south", "gated"] };
+
+// The two sentences an agent would write about each property: the setting, and what is close by.
+const TEXTS = {
+  R4512345: {
+    intro: { en: "A south-facing family villa on a quiet cul-de-sac in the Golf Valley, a short walk from the Las Brisas and Aloha golf courses.",
+             es: "Villa familiar orientada al sur en una tranquila calle sin salida del Valle del Golf, a pocos pasos de los campos de Las Brisas y Aloha.",
+             sv: "En familjevilla i söderläge på en lugn återvändsgata i golfdalen, en kort promenad från banorna Las Brisas och Aloha.",
+             nl: "Een familievilla op het zuiden aan een rustige doodlopende straat in de Golf Valley, op loopafstand van de golfbanen Las Brisas en Aloha.",
+             de: "Eine Familienvilla mit Südausrichtung in einer ruhigen Sackgasse im Golf Valley, wenige Gehminuten von den Golfplätzen Las Brisas und Aloha." },
+    loc:   { en: "Puerto Banús, the beach and international schools are all within ten minutes by car, and Marbella old town is fifteen.",
+             es: "Puerto Banús, la playa y los colegios internacionales están a menos de diez minutos en coche, y el casco antiguo de Marbella a quince.",
+             sv: "Puerto Banús, stranden och internationella skolor ligger inom tio minuter med bil, och Marbellas gamla stad inom femton.",
+             nl: "Puerto Banús, het strand en internationale scholen liggen binnen tien minuten rijden, de oude binnenstad van Marbella op vijftien.",
+             de: "Puerto Banús, der Strand und internationale Schulen sind in zehn Autominuten erreichbar, die Altstadt von Marbella in fünfzehn." } },
+  R4601877: {
+    intro: { en: "A renovated corner townhouse in a small gated community of twelve homes, on the beach side of San Pedro.",
+             es: "Adosado de esquina reformado en una pequeña urbanización cerrada de doce viviendas, en el lado de playa de San Pedro.",
+             sv: "Ett renoverat radhus i hörnläge i ett litet grindat område med tolv hus, på strandsidan av San Pedro.",
+             nl: "Een gerenoveerde hoekwoning in een klein afgesloten complex van twaalf huizen, aan de strandzijde van San Pedro.",
+             de: "Ein renoviertes Eckreihenhaus in einer kleinen, geschlossenen Anlage mit zwölf Häusern auf der Strandseite von San Pedro." },
+    loc:   { en: "The boulevard, cafés and the beach promenade are five minutes on foot, and Puerto Banús is ten minutes by car.",
+             es: "El bulevar, las cafeterías y el paseo marítimo están a cinco minutos a pie, y Puerto Banús a diez minutos en coche.",
+             sv: "Boulevarden, kaféerna och strandpromenaden nås på fem minuter till fots, och Puerto Banús på tio minuter med bil.",
+             nl: "De boulevard, cafés en de strandpromenade liggen op vijf minuten lopen, Puerto Banús op tien minuten rijden.",
+             de: "Boulevard, Cafés und Strandpromenade sind fünf Gehminuten entfernt, Puerto Banús zehn Autominuten." } },
+  R4588120: {
+    intro: { en: "A contemporary villa on a corner plot in Las Brisas, looking out over the golf course and the mountains.",
+             es: "Villa contemporánea en parcela de esquina en Las Brisas, con vistas al campo de golf y a la montaña.",
+             sv: "En modern villa på hörntomt i Las Brisas, med utsikt över golfbanan och bergen.",
+             nl: "Een eigentijdse villa op een hoekperceel in Las Brisas, met uitzicht over de golfbaan en de bergen.",
+             de: "Eine moderne Villa auf einem Eckgrundstück in Las Brisas mit Blick über den Golfplatz und die Berge." },
+    loc:   { en: "The Las Brisas clubhouse is a few minutes' walk away and Puerto Banús is a seven-minute drive.",
+             es: "La casa club de Las Brisas está a pocos minutos a pie y Puerto Banús a siete minutos en coche.",
+             sv: "Klubbhuset i Las Brisas ligger några minuters promenad bort och Puerto Banús sju minuter med bil.",
+             nl: "Het clubhuis van Las Brisas ligt op een paar minuten lopen en Puerto Banús op zeven minuten rijden.",
+             de: "Das Clubhaus von Las Brisas ist wenige Gehminuten entfernt, Puerto Banús sieben Autominuten." } },
+  R4630011: {
+    intro: { en: "A classic Andalusian villa on a large plot in Guadalmina Alta, with mature gardens, real privacy and 24-hour security in the area.",
+             es: "Villa andaluza clásica en una gran parcela en Guadalmina Alta, con jardín maduro, total privacidad y seguridad 24 horas en la zona.",
+             sv: "En klassisk andalusisk villa på en stor tomt i Guadalmina Alta, med vuxen trädgård, full avskildhet och bevakning dygnet runt i området.",
+             nl: "Een klassieke Andalusische villa op een groot perceel in Guadalmina Alta, met volgroeide tuin, veel privacy en 24-uurs beveiliging in de wijk.",
+             de: "Eine klassische andalusische Villa auf einem großen Grundstück in Guadalmina Alta, mit gewachsenem Garten, viel Privatsphäre und 24-Stunden-Sicherheitsdienst im Viertel." },
+    loc:   { en: "The Guadalmina golf club is next door, and San Pedro and international schools are five minutes away.",
+             es: "El club de golf Guadalmina está al lado, y San Pedro y los colegios internacionales a cinco minutos.",
+             sv: "Guadalmina golfklubb ligger granne, och San Pedro och internationella skolor fem minuter bort.",
+             nl: "De Guadalmina golfclub ligt ernaast, San Pedro en internationale scholen op vijf minuten.",
+             de: "Der Golfclub Guadalmina liegt nebenan, San Pedro und internationale Schulen sind fünf Minuten entfernt." } },
+  R4550932: {
+    intro: { en: "A bright apartment in a gated complex a short walk from the marina, with a 40 m² terrace looking over the harbour and the sea.",
+             es: "Luminoso apartamento en un complejo cerrado a pocos pasos del puerto deportivo, con una terraza de 40 m² con vistas al puerto y al mar.",
+             sv: "En ljus lägenhet i ett grindat område en kort promenad från marinan, med en terrass på 40 m² mot hamnen och havet.",
+             nl: "Een licht appartement in een afgesloten complex op loopafstand van de jachthaven, met een terras van 40 m² met uitzicht op de haven en de zee.",
+             de: "Eine helle Wohnung in einer geschlossenen Anlage nahe der Marina, mit 40 m² Terrasse und Blick auf Hafen und Meer." },
+    loc:   { en: "Restaurants, shops and the beach are on the doorstep, and Marbella centre is ten minutes by car.",
+             es: "Restaurantes, tiendas y la playa a la puerta, y el centro de Marbella a diez minutos en coche.",
+             sv: "Restauranger, butiker och stranden finns runt hörnet, och Marbellas centrum ligger tio minuter bort med bil.",
+             nl: "Restaurants, winkels en het strand liggen om de hoek, het centrum van Marbella op tien minuten rijden.",
+             de: "Restaurants, Geschäfte und Strand liegen vor der Tür, das Zentrum von Marbella ist zehn Autominuten entfernt." } },
+  R4619004: {
+    intro: { en: "A family villa in Guadalmina Baja, a quiet beachside neighbourhood with 24-hour security and wide, tree-lined streets.",
+             es: "Villa familiar en Guadalmina Baja, una tranquila zona junto a la playa con seguridad 24 horas y amplias calles arboladas.",
+             sv: "En familjevilla i Guadalmina Baja, ett lugnt strandnära område med bevakning dygnet runt och breda, trädkantade gator.",
+             nl: "Een familievilla in Guadalmina Baja, een rustige wijk aan het strand met 24-uurs beveiliging en brede lanen met bomen.",
+             de: "Eine Familienvilla in Guadalmina Baja, einem ruhigen Strandviertel mit 24-Stunden-Sicherheitsdienst und breiten, baumgesäumten Straßen." },
+    loc:   { en: "The beach is a five-minute walk and the Guadalmina golf course borders the neighbourhood.",
+             es: "La playa está a cinco minutos a pie y el campo de golf de Guadalmina linda con la urbanización.",
+             sv: "Stranden nås på fem minuter till fots och Guadalminas golfbana gränsar till området.",
+             nl: "Het strand ligt op vijf minuten lopen en de golfbaan van Guadalmina grenst aan de wijk.",
+             de: "Der Strand ist fünf Gehminuten entfernt, der Golfplatz Guadalmina grenzt an das Viertel." } },
+  R4644210: {
+    intro: { en: "A villa on an elevated plot in El Paraíso Alto with open views of the Mediterranean, Gibraltar and, on clear days, the coast of Africa.",
+             es: "Villa en una parcela elevada de El Paraíso Alto con vistas abiertas al Mediterráneo, Gibraltar y, en días claros, la costa de África.",
+             sv: "En villa på en upphöjd tomt i El Paraíso Alto med fri utsikt över Medelhavet, Gibraltar och, en klar dag, Afrikas kust.",
+             nl: "Een villa op een verhoogd perceel in El Paraíso Alto met weids uitzicht over de Middellandse Zee, Gibraltar en op heldere dagen de kust van Afrika.",
+             de: "Eine Villa auf einem erhöhten Grundstück in El Paraíso Alto mit freiem Blick über das Mittelmeer, Gibraltar und an klaren Tagen bis zur Küste Afrikas." },
+    loc:   { en: "El Paraíso golf club is three minutes away, and San Pedro and Estepona are both within fifteen minutes.",
+             es: "El club de golf El Paraíso está a tres minutos, y San Pedro y Estepona a menos de quince.",
+             sv: "El Paraísos golfklubb ligger tre minuter bort, och både San Pedro och Estepona inom femton minuter.",
+             nl: "De golfclub El Paraíso ligt op drie minuten, San Pedro en Estepona allebei binnen vijftien minuten.",
+             de: "Der Golfclub El Paraíso ist drei Minuten entfernt, San Pedro und Estepona jeweils in unter fünfzehn Minuten." } },
+};
+const EXTRAS = {
+  underfloor: { en: "Underfloor heating", es: "Suelo radiante", sv: "Golvvärme", nl: "Vloerverwarming", de: "Fußbodenheizung" },
+  aircon:     { en: "Air conditioning", es: "Aire acondicionado", sv: "Luftkonditionering", nl: "Airconditioning", de: "Klimaanlage" },
+  guest:      { en: "Guest apartment", es: "Apartamento de invitados", sv: "Gästlägenhet", nl: "Gastenappartement", de: "Gästeapartment" },
+  gym:        { en: "Home gym", es: "Gimnasio", sv: "Gym", nl: "Fitnessruimte", de: "Fitnessraum" },
+  solar:      { en: "Solar panels", es: "Placas solares", sv: "Solpaneler", nl: "Zonnepanelen", de: "Solaranlage" },
+  storage:    { en: "Storage room", es: "Trastero", sv: "Förråd", nl: "Berging", de: "Abstellraum" },
+  alarm:      { en: "Alarm system", es: "Sistema de alarma", sv: "Larm", nl: "Alarmsysteem", de: "Alarmanlage" },
+  concierge:  { en: "Concierge", es: "Conserjería", sv: "Concierge", nl: "Conciërge", de: "Concierge" },
+};
+const ORIENT = {
+  S:  { en: "South", es: "Sur", sv: "Söder", nl: "Zuid", de: "Süd" },
+  SW: { en: "Southwest", es: "Suroeste", sv: "Sydväst", nl: "Zuidwest", de: "Südwest" },
+  SE: { en: "Southeast", es: "Sureste", sv: "Sydost", nl: "Zuidoost", de: "Südost" },
+};
+
+// ---------- Sheet template: one unbranded layout, text in the buyer's language ----------
+const LANGS = { en: "English", es: "Español", sv: "Svenska", nl: "Nederlands", de: "Deutsch" };
+const FEATURES = {
+  pool:   { match: /pool/i,              en: "Heated private pool", es: "Piscina privada climatizada", sv: "Uppvärmd egen pool", nl: "Verwarmd privézwembad", de: "Beheizter Privatpool" },
+  south:  { match: /south|sun/i,         en: "South-facing", es: "Orientación sur", sv: "Söderläge", nl: "Op het zuiden", de: "Südausrichtung" },
+  walk:   { match: /walk|amenit/i,       en: "Walk to shops and restaurants", es: "A pie de tiendas y restaurantes", sv: "Gångavstånd till butiker och restauranger", nl: "Op loopafstand van winkels en restaurants", de: "Läden und Restaurants zu Fuß" },
+  sea:    { match: /sea|frontline/i,     en: "Sea views", es: "Vistas al mar", sv: "Havsutsikt", nl: "Zeezicht", de: "Meerblick" },
+  garden: { match: /garden|plot/i,       en: "Large private garden", es: "Amplio jardín privado", sv: "Stor egen trädgård", nl: "Grote privétuin", de: "Großer Privatgarten" },
+  gated:  { match: /gated|privacy|secur/i, en: "Gated community", es: "Urbanización cerrada", sv: "Grindat område", nl: "Afgesloten wooncomplex", de: "Bewachte Wohnanlage" },
+  golf:   { match: /golf/i,              en: "Golf nearby", es: "Golf a pocos minutos", sv: "Nära golf", nl: "Golfbaan dichtbij", de: "Golfplatz in der Nähe" },
+  beach:  { match: /beach/i,             en: "Close to the beach", es: "Cerca de la playa", sv: "Nära stranden", nl: "Dicht bij het strand", de: "Strandnah" },
+  ready:  { match: /ready|move/i,        en: "Move-in ready", es: "Lista para entrar a vivir", sv: "Inflyttningsklar", nl: "Instapklaar", de: "Bezugsfertig" },
+  roof:   { match: /roof|terrace/i,      en: "Roof terrace", es: "Solárium", sv: "Takterrass", nl: "Dakterras", de: "Dachterrasse" },
+};
+const COVER_CAPS = ["Photo 1", "Photo 2", "Photo 3", "Photo 4"];
+const T = {
+  en: { and: "and", beds: "Beds", baths: "Baths", built: "m² built", plot: "m² plot",
+        layout: (bu, b, ba, pl) => `Inside there are ${bu} m² of living space with ${b} bedrooms and ${ba} bathrooms${pl ? `, on a ${pl} m² plot` : ""}.`,
+        hl: l => `Highlights include ${l}.`, extras: l => `Also included: ${l}.`, hist: (y, r) => `Built in ${y}${r ? ` and renovated in ${r}` : ""}.`,
+        facts: ["Year built", "Orientation", "Parking spaces", "Energy rating", "Property tax (IBI)", "Community fees"], yr: "/ yr", mo: "/ mo", none: "None",
+        ask: n => `Ask ${n} on WhatsApp`, ref: "MLS ref", noteFrom: n => `A note from ${n}`, forWho: x => `Prepared for ${x}`,
+        note: f => `Hi ${f}, this is the one I mentioned. Happy to show you around whenever it suits you.`, msg: (f, l) => `Hi ${f}, here’s the sheet: ${l}` },
+  es: { and: "y", beds: "Dorm.", baths: "Baños", built: "m² const.", plot: "m² parcela",
+        layout: (bu, b, ba, pl) => `${bu} m² construidos con ${b} dormitorios y ${ba} baños${pl ? `, en una parcela de ${pl} m²` : ""}.`,
+        hl: l => `Destaca por: ${l}.`, extras: l => `Incluye además: ${l}.`, hist: (y, r) => `Construcción de ${y}${r ? `, reforma integral en ${r}` : ""}.`,
+        facts: ["Año", "Orientación", "Plazas de garaje", "Certificado energético", "IBI", "Comunidad"], yr: "/ año", mo: "/ mes", none: "Sin comunidad",
+        ask: n => `Pregunta a ${n} por WhatsApp`, ref: "Ref. MLS", noteFrom: n => `Nota de ${n}`, forWho: x => `Preparado para ${x}`,
+        note: f => `Hola ${f}, esta es la que te comenté. Encantado de enseñártela cuando quieras.`, msg: (f, l) => `Hola ${f}, aquí tienes la ficha: ${l}` },
+  sv: { and: "och", beds: "Sovrum", baths: "Badrum", built: "m² boyta", plot: "m² tomt",
+        layout: (bu, b, ba, pl) => `${bu} m² boyta med ${b} sovrum och ${ba} badrum${pl ? `, på en tomt om ${pl} m²` : ""}.`,
+        hl: l => `Det som sticker ut: ${l}.`, extras: l => `Dessutom: ${l}.`, hist: (y, r) => `Byggd ${y}${r ? `, renoverad ${r}` : ""}.`,
+        facts: ["Byggår", "Väderstreck", "Parkeringsplatser", "Energiklass", "Fastighetsskatt (IBI)", "Föreningsavgift"], yr: "/ år", mo: "/ mån", none: "Ingen",
+        ask: n => `Fråga ${n} på WhatsApp`, ref: "MLS-ref", noteFrom: n => `Hälsning från ${n}`, forWho: x => `Till ${x}`,
+        note: f => `Hej ${f}! Det här är den jag nämnde. Visar den gärna när det passar er.`, msg: (f, l) => `Hej ${f}, här är bladet: ${l}` },
+  nl: { and: "en", beds: "Slaapk.", baths: "Badk.", built: "m² woon", plot: "m² perceel",
+        layout: (bu, b, ba, pl) => `${bu} m² woonoppervlak met ${b} slaapkamers en ${ba} badkamers${pl ? `, op een perceel van ${pl} m²` : ""}.`,
+        hl: l => `Wat opvalt: ${l}.`, extras: l => `Verder: ${l}.`, hist: (y, r) => `Gebouwd in ${y}${r ? `, gerenoveerd in ${r}` : ""}.`,
+        facts: ["Bouwjaar", "Oriëntatie", "Parkeerplaatsen", "Energielabel", "Onroerendgoedbelasting (IBI)", "Servicekosten"], yr: "/ jaar", mo: "/ mnd", none: "Geen",
+        ask: n => `Vraag ${n} via WhatsApp`, ref: "MLS-ref", noteFrom: n => `Bericht van ${n}`, forWho: x => `Voor ${x}`,
+        note: f => `Hoi ${f}, dit is de woning die ik noemde. Ik laat hem je graag zien wanneer het uitkomt.`, msg: (f, l) => `Hoi ${f}, hier is de woning: ${l}` },
+  de: { and: "und", beds: "Zimmer", baths: "Bäder", built: "m² Wohnfl.", plot: "m² Grundst.",
+        layout: (bu, b, ba, pl) => `${bu} m² Wohnfläche mit ${b} Schlafzimmern und ${ba} Bädern${pl ? `, auf einem Grundstück von ${pl} m²` : ""}.`,
+        hl: l => `Besonders: ${l}.`, extras: l => `Außerdem: ${l}.`, hist: (y, r) => `Baujahr ${y}${r ? `, renoviert ${r}` : ""}.`,
+        facts: ["Baujahr", "Ausrichtung", "Stellplätze", "Energieklasse", "Grundsteuer (IBI)", "Gemeinschaftskosten"], yr: "/ Jahr", mo: "/ Monat", none: "Keine",
+        ask: n => `${n} per WhatsApp fragen`, ref: "MLS-Ref.", noteFrom: n => `Notiz von ${n}`, forWho: x => `Für ${x}`,
+        note: f => `Hallo ${f}, das ist die Immobilie, von der ich erzählt habe. Ich zeige sie Ihnen gern, wann es passt.`, msg: (f, l) => `Hallo ${f}, hier ist das Exposé: ${l}` },
+};
+const LOCALE = { en: "en-GB", es: "es-ES", sv: "sv-SE", nl: "nl-NL", de: "de-DE" };
+const fmtNum = (n, lang = "en") => n.toLocaleString(LOCALE[lang]);
+function listJoin(items, lang) {
+  // German keeps capitals on nouns; adjectives mid-sentence go lower case.
+  const lower = x => x.charAt(0).toLowerCase() + x.slice(1);
+  const xs = items.map(x => lang !== "de" ? lower(x) : /^(Beheizter|Großer|Strandnah|Bezugsfertig|Bewachte)/.test(x) ? lower(x) : x);
+  return xs.length < 2 ? xs.join("") : xs.slice(0, -1).join(", ") + ` ${T[lang].and} ` + xs[xs.length - 1];
+}
+function describe(p, lang, hl) {
+  const t = T[lang], tx = TEXTS[p.ref];
+  return [
+    [tx.intro[lang], t.layout(fmtNum(p.built, lang), p.beds, p.baths, p.plot ? fmtNum(p.plot, lang) : 0), t.hl(listJoin(hl.map(k => FEATURES[k][lang]), lang))].join(" "),
+    [tx.loc[lang], t.extras(listJoin(p.extras.map(k => EXTRAS[k][lang]), lang)), t.hist(p.year, p.reno)].join(" "),
+  ];
+}
+function keyFacts(p, lang) {
+  const t = T[lang], f = t.facts;
+  return [[f[0], p.reno ? `${p.year} · ${p.reno}` : p.year], [f[1], ORIENT[p.orient][lang]], [f[2], p.parking], [f[3], p.energy],
+    [f[4], `${money(p.ibi)} ${t.yr}`], [f[5], p.comm ? `${money(p.comm)} ${t.mo}` : t.none]];
+}
+const firstName = c => c.name.split(" ").slice(0, -1).join(" ") || c.name;
+const langFor = c => ({ Swedish: "sv", Dutch: "nl", Spanish: "es", German: "de" }[c.lang.split(" ")[0]] || "en");
+const sheetLink = (cid, ref) => "sheet.homes/" + (cid + ref).split("").reduce((h, ch) => (h * 31 + ch.charCodeAt(0)) >>> 0, 7).toString(36).slice(0, 6);
+const coverSeeds = p => [p.seed, (p.seed + 2) % 6, 6 + p.seed % 6, 6 + (p.seed + 3) % 6];
+
+// The page the buyer opens. o: { lang, hl, cover, note, forWho }
+function sheetHTML(p, o) {
+  const t = T[o.lang], seeds = coverSeeds(p);
+  const cover = seeds[o.cover], rest = seeds.filter((_, i) => i !== o.cover);
+  return `${photo(cover, "", "ms-cover")}
+    <div class="ms">
+      ${o.forWho ? `<div class="ms-for">${esc(t.forWho(o.forWho))}</div>` : ""}
+      <div class="price">${money(p.price)}</div>
+      <div class="area">${esc(p.area)}</div>
+      <div class="facts"><div><b>${p.beds}</b><span>${t.beds}</span></div><div><b>${p.baths}</b><span>${t.baths}</span></div><div><b>${p.built}</b><span>${t.built}</span></div><div><b>${p.plot ? fmtNum(p.plot, o.lang) : "–"}</b><span>${t.plot}</span></div></div>
+      <div class="ms-hl">${o.hl.map(k => `<span>${esc(FEATURES[k][o.lang])}</span>`).join("")}</div>
+      ${o.note ? `<div class="ms-note"><div class="ms-note-h">${esc(t.noteFrom(AGENT.name))}</div>${esc(o.note)}</div>` : ""}
+      ${describe(p, o.lang, o.hl).map(t => `<p>${esc(t)}</p>`).join("")}
+      <dl class="ms-facts">${keyFacts(p, o.lang).map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(String(v))}</dd></div>`).join("")}</dl>
+      <div class="grid-ph">${rest.concat(p.seed + 8).map(sd => photo(sd)).join("")}</div>
+      <div class="ms-map">${mapSVG(p.area)}</div>
+      <div class="agent-card"><div class="avatar">J</div><div><b>${AGENT.name}</b><div style="color:#666;font-size:12.5px">${AGENT.agency}</div><div class="mono" style="font-size:12.5px;color:#333">${AGENT.phone}</div></div>
+        <button class="wa-btn" data-act="wa-sheet" data-ref="${p.ref}">${ICON.wa} ${esc(t.ask(AGENT.name))}</button></div>
+      <div class="ref">${t.ref} ${p.ref}</div>
+    </div>`;
+}
+
+function seedClients() {
+  return [
+    { id: "anna", name: "Anna & Erik Lindqvist", flag: "🇸🇪", lang: "Swedish", role: "buyer", stage: "viewing", budget: "€2.0–2.6M",
+      next: { text: "Follow up after Saturday's viewing", date: "2026-10-26", owner: "agent", ev: "“We’ll be there at 11, see you Saturday!”" },
+      profile: ["4+ bedrooms", "Private pool", "Nueva Andalucía / San Pedro", "Walk to amenities", "Up to €2.6M"],
+      matches: ["R4512345", "R4619004"], flags: { viewingNoFollowUp: true },
+      tl: [
+        { at: "2026-10-24T11:00", src: "cal", what: "Viewing done · R4512345", q: "Calendar: Viewing Lindqvist, Nueva Andalucía" },
+        { at: "2026-10-22T18:40", src: "wa", what: "Viewing booked · R4512345", q: "“We’ll be there at 11, see you Saturday!”" },
+        { at: "2026-10-21T09:12", src: "sheet", what: "Opened sheet · R4512345 (3×)", q: "Last open from Stockholm" },
+        { at: "2026-10-20T16:05", src: "wa", what: "Sent 2 properties", q: "Jonathan: “Two villas that tick your boxes, have a look.”" },
+      ] },
+    { id: "mark", name: "Mark Davies", flag: "🇬🇧", lang: "English", role: "buyer", stage: "searching", budget: "€1.0–1.4M",
+      next: { text: "Wait for Mark’s feedback on 3 properties", date: "2026-10-30", owner: "client", ev: "“Brilliant, I’ll go through them this weekend.”" },
+      profile: ["3–4 bedrooms", "Walk to beach", "San Pedro / Puerto Banús", "Low community fees", "Up to €1.4M"],
+      matches: ["R4601877", "R4550932"], flags: { silentAfterSend: 4 },
+      tl: [
+        { at: "2026-10-24T10:20", src: "sheet", what: "Opened sheet · R4601877", q: "Opened twice, tapped photos 9×" },
+        { at: "2026-10-24T09:02", src: "wa", what: "Client replied", q: "“Brilliant, I’ll go through them this weekend.”" },
+        { at: "2026-10-23T17:30", src: "wa", what: "Sent 3 properties", q: "Jonathan: “Three options near the beach in San Pedro and Banús.”" },
+      ] },
+    { id: "sophie", name: "Sophie van Dijk", flag: "🇳🇱", lang: "Dutch", role: "buyer", stage: "offer", budget: "€2.0–2.3M",
+      next: { text: "Seller’s answer on €2.15M offer", date: "2026-10-30", owner: "other", ev: "Isabel: “I’ll present it to my sellers tonight.”" },
+      profile: ["4 bedrooms", "Private pool", "Nueva Andalucía", "Move-in ready", "Up to €2.3M"],
+      matches: ["R4588120"], flags: {},
+      tl: [
+        { at: "2026-10-27T19:10", src: "wa", what: "Offer made · R4588120 · €2,150,000", q: "Sophie: “Let’s go in at 2.15 and see.”" },
+        { at: "2026-10-25T12:00", src: "cal", what: "Second viewing done · R4588120", q: "Calendar: Las Brisas with Sophie + architect" },
+      ] },
+    { id: "carlos", name: "Carlos Ruiz", flag: "🇪🇸", lang: "Spanish", role: "seller", stage: "new_lead", budget: "Asking ~€2.95M",
+      next: { text: "Sign exclusive mandate, El Paraíso Alto", date: "2026-11-02", owner: "agent", ev: "“Vale, firmamos la exclusiva el lunes.”" },
+      profile: ["Seller", "Villa, El Paraíso Alto", "5 bedrooms", "Wants exclusive", "Valuation €2.85–3.0M"],
+      matches: [], flags: {},
+      tl: [
+        { at: "2026-10-27T08:11", src: "wa", what: "Agreed to sign exclusive", q: "“Vale, firmamos la exclusiva el lunes.”" },
+        { at: "2026-10-26T18:22", src: "voice", what: "Sent valuation (voice note)", q: "Transcript: “Te mando la valoración, entre 2,85 y 3 millones…”" },
+      ] },
+    { id: "henrik", name: "Henrik Berg", flag: "🇳🇴", lang: "Norwegian / English", role: "buyer", stage: "new_lead", budget: "€2.5–3.2M",
+      next: null, profile: ["5 bedrooms", "Private pool", "Large garden", "Golf nearby", "Up to €3.2M"],
+      matches: ["R4512345", "R4630011"], flags: { unanswered: { text: "Is the pool heated? We could come over 14–16 Nov.", at: "2026-10-27T08:15" } },
+      tl: [
+        { at: "2026-10-27T08:15", src: "wa", what: "Client asked a question", q: "“Is the pool heated? We could come over 14–16 Nov.”" },
+        { at: "2026-10-26T20:30", src: "sheet", what: "Opened sheet · R4512345", q: "Forwarded to 1 other person" },
+      ] },
+    { id: "olga", name: "Olga Petrova", flag: "🇨🇾", lang: "English / Russian", role: "buyer", stage: "searching", budget: "€2.8–3.5M",
+      next: { text: "Send shortlist for December trip", date: "2026-11-06", owner: "agent", ev: "“We fly in on 4 December.”" },
+      profile: ["5+ bedrooms", "Large plot", "Guadalmina / Sotogrande", "Privacy", "Up to €3.5M"],
+      matches: ["R4630011"], flags: { newMatch: "R4630011" },
+      tl: [{ at: "2026-10-19T13:00", src: "mail", what: "Email: travel dates", q: "“We fly in on 4 December.”" }] },
+    { id: "tom", name: "Tom Fischer", flag: "🇩🇪", lang: "German", role: "buyer", stage: "searching", budget: "€1.2–1.6M",
+      next: null, profile: ["3 bedrooms", "Sea view", "Golf", "Up to €1.6M"], matches: ["R4550932"], flags: {},
+      tl: [{ at: "2026-10-16T15:40", src: "wa", what: "Sent 2 properties", q: "Jonathan: “Hier zwei Optionen mit Meerblick.”" }] },
+    { id: "fatima", name: "Fatima Al-Sayed", flag: "🇦🇪", lang: "English", role: "buyer", stage: "reservation", budget: "€1.35M agreed",
+      next: { text: "Lawyer sends arras draft", date: "2026-10-31", owner: "other", ev: "Lawyer: “Draft by Friday.”" },
+      profile: ["3 bedrooms", "Frontline", "Puerto Banús", "Up to €1.4M"], matches: ["R4550932"], flags: {},
+      tl: [{ at: "2026-10-25T10:00", src: "wa", what: "Reservation deposit paid · R4550932", q: "“Transfer done, €20,000.”" }] },
+    { id: "carter", name: "James & Lucy Carter", flag: "🇮🇪", lang: "English", role: "buyer", stage: "arras", budget: "€2.69M agreed",
+      next: { text: "Notary signing, Marbella", date: "2026-11-14", owner: "other", ev: "Notary: “Completion booked 14 Nov, 10:00.”" },
+      profile: ["4 bedrooms", "Walk to beach", "Guadalmina Baja"], matches: ["R4619004"], flags: {},
+      tl: [{ at: "2026-10-09T12:00", src: "wa", what: "Arras signed · R4619004", q: "“Signed! Champagne tonight.”" }] },
+    { id: "klaus", name: "Klaus Weber", flag: "🇩🇪", lang: "German", role: "buyer", stage: "parked", budget: "€1.5–2.0M",
+      next: { text: "Check in about spring plans", date: "2027-02-01", owner: "agent", ev: "“Lass uns im Februar wieder sprechen.”" },
+      profile: ["4 bedrooms", "Golf", "Up to €2.0M"], matches: [], flags: {},
+      tl: [{ at: "2026-09-30T11:00", src: "wa", what: "Client paused search", q: "“Lass uns im Februar wieder sprechen.”" }] },
+    { id: "isabel", name: "Isabel Moreno", flag: "🇪🇸", lang: "Spanish / English", role: "agent", stage: "offer", budget: "Seller side, R4588120",
+      next: { text: "Present Sophie’s offer to her sellers", date: "2026-10-29", owner: "other", ev: "“I’ll present it to my sellers tonight.”" },
+      profile: ["Co-broke 50/50", "Listing agent R4588120"], matches: ["R4588120"], flags: {},
+      tl: [{ at: "2026-10-27T19:30", src: "wa", what: "Offer forwarded · R4588120", q: "Jonathan: “Offer from my buyer: 2,150,000, proof of funds attached.”" }] },
+  ];
+}
+function seedHandled() {
+  return [
+    { at: "2026-10-28T07:02", text: "<b>Sophie van Dijk</b> moved to Offer", sub: "From last night’s WhatsApp: “Let’s go in at 2.15 and see.”" },
+    { at: "2026-10-28T06:40", text: "New Resales listing matched to <b>Olga Petrova</b>", sub: "R4630011 · Guadalmina Alta · €3,100,000" },
+    { at: "2026-10-27T21:15", text: "Logged Carlos Ruiz’s voice note", sub: "Transcribed from Spanish and added to the timeline" },
+  ];
+}
+
+let state = { clients: seedClients(), handled: seedHandled(), horizon: 7, listings: ["R4512345", "R4601877"], sim: 0, sentLog: [], add: { step: 0, answers: [] }, sheetLang: "en", editing: null };
+const C = id => state.clients.find(c => c.id === id);
+
+// ---------- Hotlist rules ----------
+const ACTIVE = new Set(["new_lead", "searching", "viewing", "offer", "reservation", "arras"]);
+function reasons(c) {
+  const r = [];
+  const f = c.flags;
+  if (f.unanswered) {
+    const h = Math.round((NOW - d(f.unanswered.at)) / 36e5);
+    if (h >= 24) r.push({ level: "red", text: `Unanswered question, ${h}h`, detail: `“${f.unanswered.text}”` });
+  }
+  if (f.silentAfterSend >= 3) r.push({ level: "red", text: `Silent ${f.silentAfterSend} days after receiving properties` });
+  if (f.newMatch) r.push({ level: "red", text: "New Resales match", detail: `${f.newMatch} · ${PROPS[f.newMatch].area}` });
+  if (f.viewingNoFollowUp) r.push({ level: "red", text: "Viewing done, no follow-up yet" });
+  if (ACTIVE.has(c.stage) && !c.next) r.push({ level: "red", text: "No next step" });
+  if (c.next) {
+    const n = daysBetween(NOW, c.next.date);
+    if (n < 0) r.push({ level: "red", text: `Next step overdue by ${-n} day${n === -1 ? "" : "s"}` });
+    else if (n <= state.horizon) r.push({ level: "amber", text: `${c.next.text}`, due: true });
+  }
+  return r;
+}
+function hotGroups() {
+  const needs = [], coming = [];
+  for (const c of state.clients) {
+    const r = reasons(c);
+    if (r.some(x => x.level === "red")) needs.push([c, r]);
+    else if (r.length) coming.push([c, r]);
+  }
+  const byDate = ([a], [b]) => (a.next ? a.next.date : "0") < (b.next ? b.next.date : "0") ? -1 : 1;
+  return { needs, coming: coming.sort(byDate) };
+}
+const onHot = c => reasons(c).length > 0;
+
+// ---------- Rendering ----------
+const $main = document.getElementById("main");
+const $rail = document.getElementById("rail");
+
+function renderRail(route) {
+  const n = hotGroups().needs.length;
+  const items = [
+    ["hotlist", "Hotlist", ICON.hot, n],
+    ["funnel", "Funnel", ICON.funnel],
+    ["listings", "Listings", ICON.home],
+    ["add", "Add property", ICON.plus],
+    ["live", "Live demo", ICON.play],
+  ];
+  const cur = route.startsWith("client") || route.startsWith("send") ? "hotlist" : route.startsWith("sheet") ? "listings" : route;
+  $rail.innerHTML = `
+    <div class="brand"><b>Marbella CRM</b><span class="demo-tag">Demo</span></div>
+    ${items.map(([k, label, ic, count]) => `
+      <a class="nav" href="#${k}" ${cur === k ? 'aria-current="page"' : ""}>${ic}<span>${label}</span>
+        ${count ? `<span class="count">${count}</span><span class="dot mdot"></span>` : ""}</a>`).join("")}
+    <div class="rail-foot">
+      <div class="agent-mini"><div class="avatar">J</div><div><b>${AGENT.name}</b><div class="muted">${AGENT.agency}</div></div></div>
+      <div class="muted">Demo data · Wed 28 Oct 2026</div>
+      <button class="linkbtn" data-act="reset">Reset demo</button>
+    </div>`;
+}
+
+function rowHTML(c, r, selected) {
+  const top = r[0];
+  return `<button class="row" data-go="client-${c.id}" aria-current="${selected === c.id}">
+    <div class="name">${avatar(c)}<span>${esc(c.name)}</span><span>${c.flag}</span></div>
+    <div class="mono muted" style="font-size:12px">${c.next ? fmtDay(c.next.date) : "–"}</div>
+    <div class="why">${esc(top.text)}</div>
+    <div class="meta"><span class="pill">${stageName(c.stage)}</span>${r.length > 1 ? `<span>+${r.length - 1} more</span>` : ""}${top.detail ? `<span>${esc(top.detail)}</span>` : ""}</div>
+  </button>`;
+}
+
+function renderHotlist(selected) {
+  const g = hotGroups();
+  const list = `
+    <div class="page-head"><div><h1>Hotlist</h1><p>Who needs you, from your WhatsApp.</p></div></div>
+    <div class="horizon"><label for="horizon">Show next steps within</label>
+      <select id="horizon">${[3, 7, 14].map(n => `<option value="${n}" ${state.horizon === n ? "selected" : ""}>${n} days</option>`).join("")}</select></div>
+    <section class="group"><div class="group-head"><span class="stripe" style="background:var(--red)"></span><h2>Needs you</h2><span class="n">${g.needs.length}</span></div>
+      ${g.needs.map(([c, r]) => rowHTML(c, r, selected)).join("") || '<div class="empty">Nothing waiting on you.</div>'}</section>
+    <section class="group"><div class="group-head"><span class="stripe" style="background:var(--amber)"></span><h2>Coming up</h2><span class="n">${g.coming.length}</span></div>
+      ${g.coming.map(([c, r]) => rowHTML(c, r, selected)).join("") || '<div class="empty">Nothing in the next days.</div>'}</section>
+    <section class="group"><div class="group-head"><span class="stripe" style="background:var(--green)"></span><h2>Already handled</h2><span class="n">${state.handled.length}</span></div>
+      ${state.handled.map(h => `<div class="handled">${ICON.check}<div>${h.text}<div class="t">${esc(h.sub)} · ${fmtWhen(h.at)}</div></div></div>`).join("")}</section>`;
+  const first = selected || (g.needs[0] && g.needs[0][0].id);
+  $main.innerHTML = `<div class="split ${selected ? "has-detail" : ""}">
+    <div class="list-col">${list}</div>
+    <div class="detail-col">${first ? clientHTML(C(first)) : ""}</div></div>`;
+}
+
+const SRC_ICON = { wa: ["wa", ICON.wa, "WhatsApp"], voice: ["wa", ICON.mic, "Voice note"], sheet: ["", ICON.eye, "Sheet"], cal: ["", ICON.cal, "Calendar"], mail: ["", ICON.mail, "Email"], sys: ["sys", ICON.sys, "System"] };
+const EVENT_TYPES = ["Sent properties", "Viewing booked", "Viewing done", "Viewing cancelled", "Offer made", "Offer accepted", "Offer rejected", "Reservation", "Arras signed", "Client question", "Not a business event"];
+
+function clientHTML(c) {
+  const overdue = c.next && daysBetween(NOW, c.next.date) < 0;
+  const r = reasons(c).filter(x => x.level === "red");
+  const editingNext = state.editing === "next-" + c.id;
+  const moving = state.editing === "move-" + c.id;
+  return `<div class="client">
+    <div class="client-top">
+      <div>
+        <a class="btn small back" href="#hotlist">${ICON.back} Hotlist</a>
+        <div class="who">${avatar(c, "lg")}<h1>${esc(c.name)} <span style="font-size:22px">${c.flag}</span></h1></div>
+        <div class="client-sub"><span class="pill accent">${ROLE[c.role]}</span><span class="pill">${stageName(c.stage)}</span><span>${esc(c.lang)}</span><span class="mono">${esc(c.budget)}</span></div>
+      </div>
+      <a class="btn wa" href="#client-${c.id}" data-act="wa">${ICON.wa} Open chat</a>
+    </div>
+
+    ${r.length ? `<div class="chips">${r.map(x => `<span class="pill red"><span class="dot"></span>${esc(x.text)}</span>`).join("")}</div>` : ""}
+
+    <section class="next ${overdue ? "overdue" : ""}" aria-label="Next step">
+      <div class="label">Next step</div>
+      ${c.next ? `
+        <div class="next-main"><h2>${esc(c.next.text)}</h2>
+          <div class="when"><b>${fmtDay(c.next.date)}</b> · ${{ agent: "on you", client: "waiting on client", other: "waiting on third party" }[c.next.owner]}</div></div>
+        <div class="ev">From: ${esc(c.next.ev)}</div>` : `<div class="next-main"><h2 style="color:var(--red)">No next step set</h2></div>`}
+      ${editingNext ? nextForm(c) : moving ? moveForm(c) : `
+      <div class="next-actions">
+        ${c.next ? `<button class="btn primary" data-act="done" data-id="${c.id}">${ICON.check} Done</button>` : ""}
+        <button class="btn" data-act="edit-next" data-id="${c.id}">${c.next ? "Change" : "Set next step"}</button>
+        <button class="btn" data-act="move" data-id="${c.id}">Move stage</button>
+      </div>`}
+    </section>
+
+    <div class="cols">
+      <section class="panel">
+        <div class="panel-head"><h3>Search profile</h3><span class="muted" style="font-size:12px">Learned from chats</span></div>
+        <div class="chips">${c.profile.map(p => `<span class="chip ${c.newChips && c.newChips.includes(p) ? "new" : ""}">${esc(p)}</span>`).join("")}</div>
+        ${c.matches.length ? `<div class="label" style="margin-top:4px">Matches</div>
+        ${c.matches.map(ref => matchHTML(c, PROPS[ref] || NEW_PROP)).join("")}` : ""}
+      </section>
+      <section class="panel">
+        <div class="panel-head"><h3>Timeline</h3><span class="muted" style="font-size:12px">Built from WhatsApp, email, calendar</span></div>
+        <div class="timeline">${c.tl.map((t, i) => tlHTML(c, t, i)).join("")}</div>
+      </section>
+    </div>
+  </div>`;
+}
+
+function matchHTML(c, p) {
+  const sent = state.sentLog.includes(c.id + p.ref);
+  return `<div class="match">${photo(p.seed)}
+    <div style="min-width:0"><div class="t">${esc(p.title)}</div>
+      <div class="s"><span class="mono">${money(p.price)}</span> · ${p.beds} bed · <span class="mono">${p.ref}</span>
+      ${p.own ? '<span class="pill accent">Your listing</span>' : '<span class="pill">Resales</span>'} ${p.isNew ? '<span class="pill red">New</span>' : ""}</div></div>
+    ${sent ? '<span class="pill green">Sent</span>' : `<button class="btn small" data-act="send" data-id="${c.id}" data-ref="${p.ref}">Send sheet</button>`}
+  </div>`;
+}
+
+function tlHTML(c, t, i) {
+  const [cls, ic, label] = SRC_ICON[t.src];
+  const editing = state.editing === `tl-${c.id}-${i}`;
+  return `<div class="tl"><div class="ic ${cls}">${ic}</div><div style="min-width:0">
+    <div class="what">${esc(t.what)} ${t.corrected ? '<span class="pill green">Corrected</span>' : ""}</div>
+    ${t.q ? `<div class="quote">${esc(t.q)}</div>` : ""}
+    ${editing ? `<div class="inline-form" style="margin-top:6px"><div class="f">
+        <select id="fix-type" aria-label="What actually happened">${EVENT_TYPES.map(e => `<option>${e}</option>`).join("")}</select>
+        <button class="btn small primary" data-act="fix-save" data-id="${c.id}" data-i="${i}">Save</button>
+        <button class="btn small" data-act="cancel">Cancel</button></div>
+        <div class="muted" style="font-size:11.5px">Your correction is saved as training data for the interpretation.</div></div>`
+      : `<div class="foot"><span class="mono">${fmtWhen(t.at)}</span><span>${label}</span>${t.src !== "sys" ? `<button class="linkbtn" style="font-size:11.5px" data-act="fix" data-id="${c.id}" data-i="${i}">Correct</button>` : ""}</div>`}
+  </div></div>`;
+}
+
+function nextForm(c) {
+  return `<div class="inline-form"><div class="f">
+      <input type="text" id="next-text" aria-label="Next step" placeholder="What happens next?" value="${c.next ? esc(c.next.text) : ""}">
+      <input type="date" id="next-date" aria-label="Date" value="${c.next ? c.next.date : addDays(1)}">
+      <select id="next-owner" aria-label="Who acts"><option value="agent">On me</option><option value="client">Waiting on client</option><option value="other">Waiting on third party</option></select></div>
+    <div class="f"><button class="btn small primary" data-act="next-save" data-id="${c.id}">Save</button><button class="btn small" data-act="cancel">Cancel</button></div></div>`;
+}
+function moveForm(c) {
+  return `<div class="inline-form"><div class="label">Move ${esc(c.name)} to</div><div class="f">
+    ${STAGES.map(([k, l]) => `<button class="btn small ${c.stage === k ? "primary" : ""}" data-act="move-to" data-id="${c.id}" data-stage="${k}">${l}</button>`).join("")}
+    <button class="btn small" data-act="cancel">Cancel</button></div></div>`;
+}
+
+function renderFunnel() {
+  $main.innerHTML = `<div class="page">
+    <div class="page-head"><div><h1>Funnel</h1><p>Every client in one stage. Drag to move. Red dot means also on the hotlist.</p></div></div>
+    <div class="board">${STAGES.map(([k, l]) => {
+      const cs = state.clients.filter(c => c.stage === k);
+      return `<section class="col" data-stage="${k}" aria-label="${l}">
+        <div class="col-head"><h2>${l}</h2><span class="muted mono">${cs.length}</span></div>
+        ${cs.map(c => `<div class="card" draggable="true" data-id="${c.id}" role="button" tabindex="0" data-go="client-${c.id}">
+          <div class="n"><span class="n-l">${avatar(c, "sm")}${esc(c.name)} ${c.flag}</span>${onHot(c) ? '<span class="dot" title="On the hotlist"></span>' : ""}</div>
+          <div class="s">${c.next ? esc(c.next.text) : '<span style="color:var(--red)">No next step</span>'}</div>
+          <div class="d">${c.next ? fmtDay(c.next.date) : ""} ${c.role !== "buyer" ? "· " + ROLE[c.role] : ""}</div></div>`).join("")}
+      </section>`;
+    }).join("")}</div></div>`;
+}
+
+function matchingBuyers(p) {
+  return state.clients.filter(c => c.role === "buyer" && c.matches.includes(p.ref));
+}
+function renderListings() {
+  const ps = state.listings.map(r => PROPS[r] || NEW_PROP);
+  $main.innerHTML = `<div class="page">
+    <div class="page-head"><div><h1>Listings</h1><p>Your own mandates. Everything else stays in Resales.</p></div><a class="btn primary" href="#add">${ICON.plus} Add property</a></div>
+    <div class="listing-grid">${ps.map(p => {
+      const buyers = matchingBuyers(p);
+      return `<article class="listing">${photo(p.seed, p.ref)}
+        <div class="body"><div class="price">${money(p.price)}</div>
+          <div><b>${esc(p.title)}</b><div class="muted">${p.beds} bed · ${p.baths} bath · ${p.built} m² built${p.plot ? ` · ${p.plot.toLocaleString("en-GB")} m² plot` : ""}</div></div>
+          <div class="stats"><div class="stat"><b>${p.opens}</b><span>sheet opens, 7 days</span></div><div class="stat"><b>${p.clicks}</b><span>WhatsApp taps</span></div><div class="stat"><b>${buyers.length}</b><span>matching buyers</span></div></div>
+          <div class="muted" style="font-size:12px">${buyers.map(b => esc(b.name)).join(", ") || "No matching buyers yet"}</div>
+          <div><a class="btn small" href="#sheet-${p.ref}">${ICON.eye} Open sheet</a></div></div></article>`;
+    }).join("")}</div></div>`;
+}
+
+function mapSVG(area) {
+  // Order matters: the first name found in the area string wins.
+  const spots = { "Guadalmina": [118, 100], "El Paraíso": [95, 72], "Nueva Andalucía": [215, 62], "Puerto Banús": [222, 94], "San Pedro": [165, 90], "Benahavís": [135, 44], "Estepona": [40, 110], "Marbella": [275, 80] };
+  const key = Object.keys(spots).find(k => area.includes(k)) || "Marbella";
+  const [x, y] = spots[key];
+  return `<svg viewBox="0 0 320 150" width="100%" role="img" aria-label="Map showing ${esc(key)}">
+    <rect width="320" height="150" fill="#E6EFE3"/>
+    <path d="M0 122 C40 120 80 112 120 108 S200 102 240 96 S300 92 320 90 L320 150 L0 150Z" fill="#BFDDEA"/>
+    <path d="M0 60 C60 40 120 30 180 36 S280 30 320 24" stroke="#C9D8C2" stroke-width="18" fill="none" stroke-linecap="round"/>
+    <path d="M0 104 C60 98 140 88 200 84 S290 76 320 74" stroke="#FFFFFF" stroke-width="3" fill="none"/>
+    ${Object.entries(spots).map(([k, [sx, sy]]) => `<text x="${sx}" y="${sy + 16}" font-size="9" fill="#4B5A52" text-anchor="middle" font-family="IBM Plex Sans, sans-serif">${k}</text>`).join("")}
+    <circle cx="${x}" cy="${y}" r="16" fill="#0F6B57" opacity=".18"/><circle cx="${x}" cy="${y}" r="5" fill="#0F6B57"/>
+    <text x="300" y="140" font-size="9" fill="#5A7F93" text-anchor="end" font-family="IBM Plex Sans, sans-serif">Mediterranean</text>
+  </svg>`;
+}
+
+function renderSheet(ref) {
+  const p = PROPS[ref] || (ref === NEW_PROP.ref ? NEW_PROP : null);
+  if (!p) return renderListings();
+  const L = state.sheetLang;
+  $main.innerHTML = `<div class="page">
+    <div class="page-head"><div><a class="btn small" href="#listings">${ICON.back} Listings</a><h1 style="margin-top:8px">Property sheet</h1><p>What the buyer sees after tapping the link in WhatsApp.</p></div>
+      <div class="langs-app" role="group" aria-label="Language">${Object.keys(LANGS).map(l => `<button class="btn small ${L === l ? "primary" : ""}" data-act="lang" data-l="${l}">${l.toUpperCase()}</button>`).join("")}</div></div>
+    <div class="sheet-wrap">
+      <div class="phone"><div class="phone-screen">${sheetHTML(p, { lang: L, hl: p.features.slice(0, 3), cover: 0 })}</div></div>
+      <div class="sheet-side">
+        <section class="panel"><h3>How it works</h3>
+          <div style="display:grid;gap:8px;font-size:13px">
+            <div>One template, unbranded, mobile first. The area is shown, never the street.</div>
+            <div>The description is written in the buyer’s language. Try the language buttons above.</div>
+            <div>The page updates when the listing changes in Resales.</div>
+            <div>Opens and WhatsApp taps go straight into the client’s timeline.</div></div></section>
+        <section class="panel"><h3>Activity</h3>
+          <div class="stats" style="border:0;padding:0"><div class="stat"><b>${p.opens ?? 0}</b><span>opens, 7 days</span></div><div class="stat"><b>${p.clicks ?? 0}</b><span>WhatsApp taps</span></div><div class="stat"><b>${matchingBuyers(p).length}</b><span>matching buyers</span></div></div></section>
+      </div>
+    </div></div>`;
+}
+
+// ---------- Send sheet: four questions, live preview ----------
+const STEPS = ["Language", "Highlights", "Cover photo", "Personal line", "Send"];
+function startCompose(c, p) {
+  const lang = langFor(c);
+  const wanted = p.features.filter(k => c.profile.some(x => FEATURES[k].match.test(x)));
+  const hl = wanted.concat(p.features.filter(k => !wanted.includes(k))).slice(0, 3);
+  return { cid: c.id, ref: p.ref, step: 0, lang, hl, cover: 0, note: T[lang].note(firstName(c)), noteEdited: false, noteOn: true };
+}
+function composeOpts(c, k) {
+  return { lang: k.lang, hl: k.hl, cover: k.cover, note: k.noteOn ? k.note : "", forWho: firstName(c) };
+}
+function questionHTML(c, p, k) {
+  const fn = esc(firstName(c));
+  switch (k.step) {
+    case 0: return `<h2>Which language does ${fn} read?</h2>
+      <p class="muted">Picked from the chat: ${esc(c.lang)}. The whole sheet switches, labels included.</p>
+      <div class="opts">${Object.entries(LANGS).map(([code, name]) => `<button class="opt" data-act="c-lang" data-l="${code}" aria-pressed="${k.lang === code}">${name}</button>`).join("")}</div>`;
+    case 1: return `<h2>What should the sheet lead with?</h2>
+      <p class="muted">Pick up to three. Preselected from ${fn}’s search profile.</p>
+      <div class="opts">${p.features.map(f => `<button class="opt" data-act="c-hl" data-k="${f}" aria-pressed="${k.hl.includes(f)}">${esc(FEATURES[f].en)}${c.profile.some(x => FEATURES[f].match.test(x)) ? ' <span class="opt-tag">profile</span>' : ""}</button>`).join("")}</div>`;
+    case 2: return `<h2>Which photo goes on the cover?</h2>
+      <p class="muted">The first thing ${fn} sees in WhatsApp.</p>
+      <div class="cover-opts">${coverSeeds(p).map((sd, i) => `<button class="cover-opt" data-act="c-cover" data-i="${i}" aria-pressed="${k.cover === i}" aria-label="${COVER_CAPS[i]}">${photo(sd, COVER_CAPS[i])}</button>`).join("")}</div>`;
+    case 3: return `<h2>Add a personal line?</h2>
+      <p class="muted">Shown at the top of the sheet in ${LANGS[k.lang]}. Edit it or leave it out.</p>
+      <textarea id="c-note" rows="3" aria-label="Personal line" ${k.noteOn ? "" : "disabled"}>${esc(k.note)}</textarea>
+      <label class="check"><input type="checkbox" id="c-noteon" ${k.noteOn ? "checked" : ""}> Include a personal line</label>`;
+    default: {
+      const link = sheetLink(c.id, p.ref);
+      return `<h2>Send to ${fn}</h2>
+      <p class="muted">This goes from your own WhatsApp number. Opens and taps come back into the timeline.</p>
+      <div class="chat wa-preview"><div class="b out"><div>${esc(T[k.lang].msg(firstName(c), "https://" + link))}</div>
+        <div class="link-card">${photo(coverSeeds(p)[k.cover])}<div><b>${money(p.price)} · ${esc(p.area.split(",")[0])}</b><div class="muted">${link}</div></div></div>
+        <div class="ts">now</div></div></div>`;
+    }
+  }
+}
+function renderCompose(cid, ref) {
+  const c = C(cid), p = PROPS[ref] || (ref === NEW_PROP.ref ? NEW_PROP : null);
+  if (!c || !p) return renderHotlist(null);
+  if (!state.compose || state.compose.cid !== c.id || state.compose.ref !== p.ref) state.compose = startCompose(c, p);
+  const k = state.compose, last = STEPS.length - 1;
+  $main.innerHTML = `<div class="page">
+    <div class="page-head"><div><a class="btn small" href="#client-${c.id}">${ICON.back} ${esc(c.name)}</a>
+      <h1 style="margin-top:8px">Send sheet</h1><p>${esc(p.title)} · <span class="mono">${money(p.price)} · ${p.ref}</span></p></div></div>
+    <div class="compose">
+      <section class="panel q-panel">
+        <ol class="stepper">${STEPS.map((st, i) => `<li class="${i === k.step ? "on" : i < k.step ? "done" : ""}"><button data-act="c-goto" data-i="${i}" ${i > k.step ? "disabled" : ""}>${i < last ? i + 1 : ICON.check}<span>${st}</span></button></li>`).join("")}</ol>
+        <div class="q">${questionHTML(c, p, k)}</div>
+        <div class="q-nav">
+          ${k.step > 0 ? `<button class="btn" data-act="c-back">Back</button>` : "<span></span>"}
+          ${k.step < last ? `<button class="btn primary" data-act="c-next">${k.step === last - 1 ? "Review" : "Next"}</button>`
+            : `<button class="btn wa" data-act="c-send" data-id="${c.id}" data-ref="${p.ref}">${ICON.wa} Send on WhatsApp</button>`}
+        </div>
+      </section>
+      <div class="preview-col"><div class="label">Live preview · what ${esc(firstName(c))} sees</div>
+        <div class="phone"><div class="phone-screen" id="c-preview">${sheetHTML(p, composeOpts(c, k))}</div></div></div>
+    </div></div>`;
+}
+
+// ---------- Add property (chat, not a form) ----------
+const ADD_QS = [
+  { q: "What are the plot and built sizes?", opts: ["1,850 m² plot · 420 m² built", "Not sure, I’ll check"] },
+  { q: "Pool?", opts: ["Private, heated", "Private", "Communal"] },
+  { q: "Community fees and IBI per year?", opts: ["€2,400 · €3,100", "Skip for now"] },
+];
+function renderAdd() {
+  const a = state.add;
+  const msgs = [];
+  msgs.push(`<div class="b out"><div class="thumbs">${[0, 1, 2, 3, 4, 5].map(i => photo(i + 7, `${i + 1}`, a.step >= 5 ? (i === 2 ? "cover" : i === 4 ? "bad" : "") : "")).join("")}</div>
+    <div>New mandate. Villa El Paraíso Alto, 5 bed, sea views, €2.95M. Owner Carlos Ruiz.</div><div class="ts">10:31</div></div>`);
+  if (a.step === 0) {
+    msgs.push(`<div class="replies"><button class="btn primary" data-act="add-next">Send to Marbella CRM</button></div>`);
+  }
+  if (a.step >= 1) msgs.push(`<div class="b in"><div class="who">Marbella CRM</div><div>Got it, 6 photos. There’s no Resales listing for this villa yet, so I need three things. Everything else I have.</div><div class="ts">10:31</div></div>`);
+  ADD_QS.forEach((q, i) => {
+    if (a.step >= i + 1) {
+      msgs.push(`<div class="b in"><div class="who">Marbella CRM · question ${i + 1} of 3</div><div>${q.q}</div></div>`);
+      if (a.answers[i]) msgs.push(`<div class="b out"><div>${esc(a.answers[i])}</div><div class="ts">10:3${2 + i}</div></div>`);
+      else msgs.push(`<div class="replies">${q.opts.map(o => `<button class="btn small" data-act="add-answer" data-a="${esc(o)}">${esc(o)}</button>`).join("")}</div>`);
+    }
+  });
+  if (a.step >= 5) {
+    msgs.push(`<div class="b in"><div class="who">Marbella CRM</div><div>Cover photo: <b>#3</b>, the terrace with the sea view. Photo <b>#5</b> is blurry, so I left it out. Retake it when you’re there on Monday?</div></div>`);
+    msgs.push(`<div class="b in"><div class="who">Marbella CRM</div><div>Done. Sheet and mini-site are live in English, Spanish and Swedish.</div>
+      <div><a class="btn small" href="#sheet-${NEW_PROP.ref}">${ICON.eye} Open sheet</a></div></div>`);
+    const buyers = ["olga", "mark", "henrik"].map(C);
+    if (!a.sent) {
+      msgs.push(`<div class="b in"><div class="who">Marbella CRM</div><div>3 buyers on your list match: ${buyers.map(b => `<b>${esc(b.name)}</b>`).join(", ")}. Send them the sheet on WhatsApp?</div>
+        <div class="replies"><button class="btn small primary" data-act="add-send">Send to all 3</button><button class="btn small" data-act="add-skip">Not now</button></div></div>`);
+    } else {
+      msgs.push(`<div class="b out"><div>${a.sent === "yes" ? "Send to all 3" : "Not now"}</div></div>`);
+      msgs.push(`<div class="b in"><div class="who">Marbella CRM</div><div>${a.sent === "yes" ? "Sent. Opens will show up in each client’s timeline." : "OK. They stay as matches on each client."}</div></div>`);
+    }
+  }
+  $main.innerHTML = `<div class="page">
+    <div class="page-head"><div><h1>Add property</h1><p>Send photos and three lines. The system asks for what’s missing, at most three questions.</p></div>
+      <button class="btn" data-act="add-reset">Start over</button></div>
+    <div class="chat-layout">
+      <div class="chat" aria-live="polite">${msgs.join("")}</div>
+      <section class="panel"><h3>What comes out</h3>
+        <ul class="applied">${[
+          ["Sheet and mini-site at its own link", a.step >= 5],
+          ["Description in the buyer’s language", a.step >= 5],
+          ["Cover photo picked, bad photos flagged", a.step >= 5],
+          ["Matching buyers offered the sheet", !!a.sent],
+        ].map(([t, ok]) => `<li style="opacity:${ok ? 1 : .45}">${ICON.check}<span>${t}</span></li>`).join("")}</ul>
+        <div class="steps" aria-label="Progress">${[0, 1, 2, 3, 4, 5].map(i => `<span class="${a.step >= i + 1 || (i === 5 && a.sent) ? "on" : ""}"></span>`).join("")}</div>
+      </section>
+    </div></div>`;
+}
+
+// ---------- Live demo: inbound WhatsApp → CRM ----------
+const SIM = [
+  { from: "Henrik Berg", dir: "out", text: "Yes, it’s heated with a heat pump. Let’s do viewings on Saturday 15 Nov, I’ll send you times.", ts: "10:42",
+    interp: [["Who", "Henrik Berg · buyer"], ["Property", "R4512345 · Nueva Andalucía"], ["What happened", "Client question answered"], ["Next step", "Send viewing times for 15 Nov · Mon 10 Nov · on you"]],
+    apply: s => { const c = C("henrik"); delete c.flags.unanswered; c.stage = "searching";
+      c.next = { text: "Send viewing times for Sat 15 Nov", date: "2026-11-10", owner: "agent", ev: "“Let’s do viewings on Saturday 15 Nov, I’ll send you times.”" };
+      c.tl.unshift({ at: "2026-10-28T10:42", src: "wa", what: "Answered question · R4512345", q: "Jonathan: “Yes, it’s heated with a heat pump…”" });
+      s.handled.unshift({ at: "2026-10-28T10:42", text: "<b>Henrik Berg</b> moved to Searching", sub: "Question answered, next step set for 10 Nov" }); },
+    result: ["Henrik leaves “Needs you”", "Stage: New lead → Searching", "Next step set for Mon 10 Nov"], client: "henrik" },
+  { from: "Mark Davies", dir: "in", text: "Sorry for the silence, been travelling. The San Pedro townhouse looks great. Could we see it Saturday morning?", ts: "11:05",
+    interp: [["Who", "Mark Davies · buyer"], ["Property", "R4601877 · San Pedro townhouse"], ["What happened", "Viewing requested"], ["Next step", "Confirm Saturday viewing with the owner · tomorrow · on you"]],
+    apply: s => { const c = C("mark"); delete c.flags.silentAfterSend;
+      c.next = { text: "Confirm Sat 31 Oct viewing of R4601877 with the owner", date: "2026-10-29", owner: "agent", ev: "“Could we see it Saturday morning?”" };
+      c.tl.unshift({ at: "2026-10-28T11:05", src: "wa", what: "Viewing requested · R4601877", q: "“Could we see it Saturday morning?”" }); },
+    result: ["Silence flag cleared", "Viewing request linked to R4601877", "Next step: confirm with owner tomorrow"], client: "mark" },
+  { from: "Isabel Moreno", dir: "in", text: "Jonathan, my sellers accept 2,200,000 for Las Brisas. Can your buyer reserve this week?", ts: "11:40",
+    interp: [["Who", "Isabel Moreno · other agent (seller side)"], ["Property", "R4588120 · Villa Las Brisas"], ["What happened", "Counter-offer: €2,200,000 accepted by sellers"], ["Linked client", "Sophie van Dijk (buyer on this property)"], ["Next step", "Tell Sophie, get a yes on €2.2M and reserve · today · on you"]],
+    apply: s => { const c = C("sophie");
+      c.next = { text: "Call Sophie: sellers accept €2.2M, reserve this week", date: "2026-10-28", owner: "agent", ev: "Isabel: “My sellers accept 2,200,000 for Las Brisas.”" };
+      c.tl.unshift({ at: "2026-10-28T11:40", src: "wa", what: "Sellers counter at €2,200,000 · R4588120", q: "Via Isabel Moreno: “Can your buyer reserve this week?”" });
+      const i = C("isabel"); i.next = { text: "Confirm reservation with Sophie’s answer", date: "2026-10-30", owner: "agent", ev: "“Can your buyer reserve this week?”" };
+      i.tl.unshift({ at: "2026-10-28T11:40", src: "wa", what: "Sellers accept €2.2M · R4588120", q: "“My sellers accept 2,200,000 for Las Brisas.”" }); },
+    result: ["Message from another agent linked to Sophie’s deal", "Sophie’s next step: call today", "Isabel’s next step updated"], client: "sophie" },
+  { from: "Anna Lindqvist", dir: "in", voice: true, text: "Hej Jonathan! Vi älskade villan i lördags, men poolen är lite liten. Har du något liknande med större trädgård?", ts: "12:15",
+    trans: "Hi Jonathan! We loved the villa on Saturday, but the pool is a bit small. Do you have something similar with a bigger garden?",
+    interp: [["Who", "Anna Lindqvist · buyer"], ["Property", "R4512345 · viewing feedback"], ["What happened", "Positive feedback, pool too small"], ["Profile change", "+ Large garden, + Bigger pool"], ["Next step", "Send 2–3 villas with bigger gardens · tomorrow · on you"]],
+    apply: s => { const c = C("anna"); delete c.flags.viewingNoFollowUp;
+      c.profile = c.profile.concat(["Large garden", "Bigger pool"]); c.newChips = ["Large garden", "Bigger pool"];
+      if (!c.matches.includes("R4630011")) c.matches.unshift("R4630011");
+      c.next = { text: "Send 2–3 villas with bigger gardens", date: "2026-10-29", owner: "agent", ev: "“Har du något liknande med större trädgård?”" };
+      c.tl.unshift({ at: "2026-10-28T12:15", src: "voice", what: "Viewing feedback · R4512345", q: "Transcript (Swedish): “Vi älskade villan… poolen är lite liten…”" });
+      s.handled.unshift({ at: "2026-10-28T12:15", text: "New match for <b>Anna & Erik Lindqvist</b>", sub: "R4630011 fits the updated profile (large garden)" }); },
+    result: ["Voice note transcribed from Swedish", "Search profile: + Large garden, + Bigger pool", "New match found: R4630011"], client: "anna" },
+];
+function renderLive() {
+  const i = state.sim;
+  const step = SIM[Math.min(i, SIM.length) - 1];
+  const done = i >= SIM.length;
+  const shown = SIM.slice(0, i);
+  $main.innerHTML = `<div class="page">
+    <div class="page-head"><div><h1>Live demo</h1><p>WhatsApp traffic comes in. The CRM updates itself. Jonathan types nothing.</p></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">${!done ? `<button class="btn primary" data-act="sim-next">${ICON.play} ${i === 0 ? "Start: next message" : "Next message"}</button>` : ""}<button class="btn" data-act="reset">Reset</button></div></div>
+    <div class="chat-layout">
+      <div class="chat" aria-live="polite">
+        ${i === 0 ? `<div class="b sys"><b>Four messages are queued.</b><div class="muted">Each one is read as it arrives: who it is, which property, what happened, and the next step. Press “Next message”.</div></div>` : ""}
+        ${shown.map(m => `<div class="b ${m.dir}"><div class="who">${m.dir === "out" ? "Jonathan → " + esc(m.from) : esc(m.from)}</div>
+          ${m.voice ? `<div class="voice">${ICON.mic}<span class="wave"></span><span class="mono">0:14</span></div><div><i>${esc(m.text)}</i></div>` : `<div>${esc(m.text)}</div>`}
+          <div class="ts">${m.ts}</div></div>`).join("")}
+        ${done ? `<div class="b sys"><b>That’s the demo.</b><div class="muted">Open the Hotlist to see where everyone landed.</div><div><a class="btn small primary" href="#hotlist">Open Hotlist</a></div></div>` : ""}
+      </div>
+      <div style="display:grid;gap:16px">
+        ${step ? `<section class="panel"><div class="panel-head"><h3>What the system understood</h3><span class="pill accent">Message ${i} of ${SIM.length}</span></div>
+          ${step.trans ? `<div class="muted" style="font-size:12.5px">Translated: “${esc(step.trans)}”</div>` : ""}
+          <dl class="interp">${step.interp.map(([k, v]) => `<dt>${k}</dt><dd>${esc(v)}</dd>`).join("")}</dl></section>
+        <section class="panel"><h3>Applied to the CRM</h3>
+          <ul class="applied">${step.result.map(t => `<li>${ICON.check}<span>${esc(t)}</span></li>`).join("")}</ul>
+          <div><a class="btn small" href="#client-${step.client}">Open client</a></div></section>`
+        : `<section class="panel"><h3>Hotlist right now</h3><div style="font-size:13px">${hotGroups().needs.length} clients need Jonathan. Watch the number in the menu drop as messages come in.</div></section>`}
+      </div>
+    </div></div>`;
+}
+
+// ---------- Router and events ----------
+function route() {
+  const h = (location.hash || "#hotlist").slice(1);
+  state.editing = state.editing && state.editingRoute === h ? state.editing : null;
+  renderRail(h);
+  if (h.startsWith("client-") && C(h.slice(7))) renderHotlist(h.slice(7));
+  else if (h === "funnel") renderFunnel();
+  else if (h === "listings") renderListings();
+  else if (h.startsWith("sheet-")) renderSheet(h.slice(6));
+  else if (h.startsWith("send-")) { const [, cid, ref] = h.split("-"); renderCompose(cid, ref); }
+  else if (h === "add") renderAdd();
+  else if (h === "live") renderLive();
+  else renderHotlist(null);
+}
+function rerender() { state.editingRoute = (location.hash || "#hotlist").slice(1); route(); }
+function edit(key) { state.editing = key; rerender(); }
+function go(h) { if (location.hash === "#" + h) route(); else location.hash = h; }
+
+let toastTimer;
+function toast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg; t.hidden = false;
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => (t.hidden = true), 2600);
+}
+
+document.addEventListener("click", e => {
+  const el = e.target.closest("[data-act],[data-go]");
+  if (!el) return;
+  if (el.dataset.go && !el.dataset.act) { state.editing = null; return go(el.dataset.go); }
+  const a = el.dataset.act, id = el.dataset.id, c = id && C(id);
+  if (el.tagName === "A" && a) e.preventDefault();
+  switch (a) {
+    case "reset": state = { ...state, clients: seedClients(), handled: seedHandled(), listings: ["R4512345", "R4601877"], sim: 0, sentLog: [], add: { step: 0, answers: [] }, compose: null, editing: null }; toast("Demo reset"); route(); break;
+    case "done":
+      c.tl.unshift({ at: "2026-10-28T10:30", src: "sys", what: "Done: " + c.next.text, q: "" });
+      c.next = null; if (c.flags.viewingNoFollowUp) delete c.flags.viewingNoFollowUp;
+      toast("Marked done. Set the next step."); edit("next-" + id); break;
+    case "edit-next": edit("next-" + id); break;
+    case "move": edit("move-" + id); break;
+    case "cancel": edit(null); break;
+    case "next-save": {
+      const text = document.getElementById("next-text").value.trim();
+      if (!text) { toast("Write what happens next first."); break; }
+      c.next = { text, date: document.getElementById("next-date").value || addDays(1), owner: document.getElementById("next-owner").value, ev: "Set by you" };
+      toast("Next step saved"); edit(null); break; }
+    case "move-to":
+      c.stage = el.dataset.stage; c.tl.unshift({ at: "2026-10-28T10:30", src: "sys", what: "Moved to " + stageName(c.stage), q: "" });
+      toast(`Moved to ${stageName(c.stage)}`); edit(null); break;
+    case "fix": edit(`tl-${id}-${el.dataset.i}`); break;
+    case "fix-save": {
+      const t = c.tl[+el.dataset.i]; t.what = document.getElementById("fix-type").value + (t.what.includes("·") ? " ·" + t.what.split("·").slice(1).join("·") : ""); t.corrected = true;
+      toast("Corrected. Saved as training data."); edit(null); break; }
+    case "send": go(`send-${id}-${el.dataset.ref}`); break;
+    case "c-lang": { const k = state.compose; k.lang = el.dataset.l; if (!k.noteEdited) k.note = T[k.lang].note(firstName(C(k.cid))); rerender(); break; }
+    case "c-hl": {
+      const k = state.compose, f = el.dataset.k;
+      if (k.hl.includes(f)) { if (k.hl.length === 1) { toast("Keep at least one highlight."); break; } k.hl = k.hl.filter(x => x !== f); }
+      else if (k.hl.length >= 3) { toast("Up to three. Remove one first."); break; }
+      else k.hl = k.hl.concat(f);
+      rerender(); break; }
+    case "c-cover": state.compose.cover = +el.dataset.i; rerender(); break;
+    case "c-next": state.compose.step++; rerender(); break;
+    case "c-back": state.compose.step--; rerender(); break;
+    case "c-goto": state.compose.step = +el.dataset.i; rerender(); break;
+    case "c-send": {
+      const ref = el.dataset.ref, link = sheetLink(id, ref);
+      state.sentLog.push(id + ref);
+      c.tl.unshift({ at: "2026-10-28T10:30", src: "wa", what: "Sent sheet · " + ref, q: `${LANGS[state.compose.lang]} · ${link}` });
+      if (c.flags.newMatch === ref) delete c.flags.newMatch;
+      state.compose = null;
+      toast(`Sheet sent to ${c.name} on WhatsApp`); go("client-" + id); break; }
+    case "wa": toast(`In the live version this opens the WhatsApp chat with ${c ? c.name : "the client"}.`); break;
+    case "wa-sheet": toast(`In the live version this opens WhatsApp with ${AGENT.name}, and the tap is logged.`); break;
+    case "lang": state.sheetLang = el.dataset.l; rerender(); break;
+    case "add-next": state.add.step = 1; rerender(); break;
+    case "add-answer": state.add.answers.push(el.dataset.a); state.add.step = state.add.answers.length === 3 ? 5 : state.add.answers.length + 1;
+      if (state.add.step === 5 && !state.listings.includes(NEW_PROP.ref)) {
+        state.listings.unshift(NEW_PROP.ref);
+        ["olga", "mark", "henrik"].forEach(k => { const b = C(k); if (!b.matches.includes(NEW_PROP.ref)) b.matches.push(NEW_PROP.ref); });
+        PROPS[NEW_PROP.ref] = NEW_PROP;
+      }
+      rerender(); break;
+    case "add-send":
+      state.add.sent = "yes";
+      ["olga", "mark", "henrik"].forEach(k => { const b = C(k); state.sentLog.push(k + NEW_PROP.ref); b.tl.unshift({ at: "2026-10-28T10:36", src: "wa", what: "Sent sheet · " + NEW_PROP.ref, q: "New listing, El Paraíso Alto" }); });
+      toast("Sheet sent to 3 buyers"); rerender(); break;
+    case "add-skip": state.add.sent = "no"; rerender(); break;
+    case "add-reset": state.add = { step: 0, answers: [] }; rerender(); break;
+    case "sim-next": SIM[state.sim].apply(state); state.sim++; rerender(); break;
+  }
+});
+document.addEventListener("change", e => {
+  if (e.target.id === "horizon") { state.horizon = +e.target.value; route(); }
+  if (e.target.id === "c-noteon") { state.compose.noteOn = e.target.checked; rerender(); }
+});
+document.addEventListener("input", e => {
+  if (e.target.id !== "c-note" || !state.compose) return;
+  const k = state.compose; k.note = e.target.value; k.noteEdited = true;
+  document.getElementById("c-preview").innerHTML = sheetHTML(PROPS[k.ref] || NEW_PROP, composeOpts(C(k.cid), k));
+});
+document.addEventListener("keydown", e => { if (e.key === "Enter" && e.target.matches(".card[data-go]")) go(e.target.dataset.go); });
+
+// Funnel drag and drop (desktop)
+document.addEventListener("dragstart", e => { const card = e.target.closest(".card"); if (card) e.dataTransfer.setData("text/plain", card.dataset.id); });
+document.addEventListener("dragover", e => { const col = e.target.closest(".col"); if (col) { e.preventDefault(); col.classList.add("over"); } });
+document.addEventListener("dragleave", e => { const col = e.target.closest(".col"); if (col && !col.contains(e.relatedTarget)) col.classList.remove("over"); });
+document.addEventListener("drop", e => {
+  const col = e.target.closest(".col"); if (!col) return;
+  e.preventDefault();
+  const c = C(e.dataTransfer.getData("text/plain"));
+  if (c && c.stage !== col.dataset.stage) { c.stage = col.dataset.stage; c.tl.unshift({ at: "2026-10-28T10:30", src: "sys", what: "Moved to " + stageName(c.stage), q: "" }); toast(`${c.name} → ${stageName(c.stage)}`); }
+  renderFunnel(); renderRail("funnel");
+});
+
+window.addEventListener("hashchange", () => { state.editing = null; route(); });
+route();
+</script>
+
+</body>
+</html>
