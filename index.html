@@ -842,26 +842,36 @@ const LOCALE = { en: "en-GB", es: "es-ES", sv: "sv-SE", nl: "nl-NL", de: "de-DE"
 // Reply drafts the agent sends from their own WhatsApp. [Brackets] are for the agent to fill in.
 const DRAFTS = {
   en: { answer: f => `Hi ${f}! Good question. [Your answer here]. Shall I set up viewings while you’re here?`,
+        owner: (f, a) => `Hi ${f}, a quick update on ${a}: here is what happened this week and what I’m doing next. [Viewings, interest, next step.] Shall we speak on Friday?`,
+        wake: f => `Hi ${f}, it’s been a while. Are you still thinking about a place here? A few things have come on the market since we last spoke, and prices have moved. Happy to send you an update if it’s useful.`,
         nudge: f => `Hi ${f}, did you get a chance to look at the properties I sent? Happy to set up viewings for the ones you like.`,
         match: (f, a) => `Hi ${f}, a villa just came on the market that fits what you’re looking for (${a}). Want me to send you the details?`,
         feedback: f => `Hi ${f}, thanks again for Saturday! What did you think of the villa? If it’s not quite right, tell me what to adjust and I’ll look for alternatives.`,
         checkin: f => `Hi ${f}, just checking in. Is your search still on, and has anything changed in what you’re looking for?` },
   sv: { answer: f => `Hej ${f}! Bra fråga. [Ditt svar här]. Ska jag boka visningar när ni är här?`,
+        owner: (f, a) => `Hej ${f}! Kort uppdatering om ${a}: så här gick veckan och det här gör jag härnäst. [Visningar, intresse, nästa steg.] Ska vi höras på fredag?`,
+        wake: f => `Hej ${f}! Det var ett tag sedan. Funderar ni fortfarande på något här nere? En del nytt har kommit ut sedan sist och priserna har rört sig. Jag skickar gärna en uppdatering om det är till nytta.`,
         nudge: f => `Hej ${f}! Hann ni titta på objekten jag skickade? Jag bokar gärna visningar på dem ni gillar.`,
         match: (f, a) => `Hej ${f}! Det har precis kommit ut en villa som matchar det ni letar efter (${a}). Vill ni att jag skickar detaljerna?`,
         feedback: f => `Hej ${f}! Tack igen för lördagen. Vad tyckte ni om villan? Om den inte riktigt passar, säg vad jag ska justera så letar jag alternativ.`,
         checkin: f => `Hej ${f}! Ville bara höra av mig. Letar ni fortfarande, och har något ändrats i vad ni söker?` },
   es: { answer: f => `¡Hola ${f}! Buena pregunta. [Tu respuesta aquí]. ¿Organizo visitas para cuando estéis aquí?`,
+        owner: (f, a) => `Hola ${f}, breve actualización sobre ${a}: esto es lo que ha pasado esta semana y lo que haré ahora. [Visitas, interés, siguiente paso.] ¿Hablamos el viernes?`,
+        wake: f => `Hola ${f}, ha pasado un tiempo. ¿Sigues pensando en comprar aquí? Han salido varias cosas desde la última vez y los precios se han movido. Te envío una actualización si te sirve.`,
         nudge: f => `Hola ${f}, ¿has podido ver las propiedades que te envié? Encantado de organizar visitas a las que te gusten.`,
         match: (f, a) => `Hola ${f}, acaba de salir una villa que encaja con lo que buscas (${a}). ¿Te envío los detalles?`,
         feedback: f => `Hola ${f}, gracias de nuevo por el sábado. ¿Qué te pareció la villa? Si no encaja del todo, dime qué ajustar y busco alternativas.`,
         checkin: f => `Hola ${f}, solo quería saber cómo va todo. ¿Sigues buscando? ¿Ha cambiado algo en lo que buscas?` },
   nl: { answer: f => `Hoi ${f}! Goede vraag. [Jouw antwoord hier]. Zal ik bezichtigingen plannen als jullie hier zijn?`,
+        owner: (f, a) => `Hoi ${f}, korte update over ${a}: dit is er deze week gebeurd en dit doe ik nu. [Bezichtigingen, interesse, volgende stap.] Zullen we vrijdag even bellen?`,
+        wake: f => `Hoi ${f}, het is even geleden. Denk je nog aan een huis hier? Er is sinds ons laatste gesprek het een en ander op de markt gekomen en de prijzen zijn veranderd. Ik stuur graag een update als dat nuttig is.`,
         nudge: f => `Hoi ${f}, heb je de woningen die ik stuurde al kunnen bekijken? Ik plan graag bezichtigingen voor de woningen die je aanspreken.`,
         match: (f, a) => `Hoi ${f}, er is net een villa op de markt gekomen die past bij wat je zoekt (${a}). Zal ik de details sturen?`,
         feedback: f => `Hoi ${f}, nogmaals bedankt voor zaterdag. Wat vond je van de villa? Als hij niet helemaal past, laat me weten wat ik moet aanpassen, dan zoek ik alternatieven.`,
         checkin: f => `Hoi ${f}, even checken hoe het gaat. Zoek je nog steeds, en is er iets veranderd in wat je zoekt?` },
   de: { answer: f => `Hallo ${f}! Gute Frage. [Ihre Antwort hier]. Soll ich Besichtigungen planen, wenn Sie hier sind?`,
+        owner: (f, a) => `Hallo ${f}, ein kurzes Update zu ${a}: das ist diese Woche passiert und das mache ich als Nächstes. [Besichtigungen, Interesse, nächster Schritt.] Sprechen wir am Freitag?`,
+        wake: f => `Hallo ${f}, es ist eine Weile her. Denken Sie noch über ein Haus hier nach? Seit unserem letzten Gespräch ist einiges auf den Markt gekommen, und die Preise haben sich bewegt. Gern schicke ich Ihnen ein Update, wenn es hilft.`,
         nudge: f => `Hallo ${f}, hatten Sie schon Gelegenheit, sich die Immobilien anzusehen? Gern organisiere ich Besichtigungen für die, die Ihnen gefallen.`,
         match: (f, a) => `Hallo ${f}, gerade ist eine Villa auf den Markt gekommen, die zu Ihrer Suche passt (${a}). Soll ich Ihnen die Details schicken?`,
         feedback: f => `Hallo ${f}, nochmals danke für Samstag. Wie hat Ihnen die Villa gefallen? Wenn sie nicht ganz passt, sagen Sie mir, was ich anpassen soll, und ich suche Alternativen.`,
@@ -977,7 +987,14 @@ function seedClients() {
     { id: "klaus", name: "Klaus Weber", flag: "🇩🇪", lang: "German", role: "buyer", stage: "parked", budget: "€1.5–2.0M",
       next: { text: "Check in about spring plans", date: "2027-02-01", owner: "agent", ev: "“Lass uns im Februar wieder sprechen.”" },
       profile: ["4 bedrooms", "Golf", "Up to €2.0M"], matches: [], flags: {},
-      tl: [{ at: "2026-09-30T11:00", src: "wa", what: "Client paused search", q: "“Lass uns im Februar wieder sprechen.”" }] },
+      tl: [{ at: "2026-08-25T11:00", src: "wa", what: "Client paused search", q: "“Lass uns im Februar wieder sprechen.”" }] },
+    { id: "marta", name: "Marta Jiménez", flag: "🇪🇸", lang: "Spanish", role: "seller", stage: "searching", budget: "Asking €1,195,000", listing: "R4601877",
+      next: null,
+      profile: ["Seller", "Townhouse, San Pedro beach side", "Exclusive until March", "Wants weekly updates"],
+      matches: [], flags: {},
+      tl: [{ at: "2026-10-12T17:40", src: "wa", what: "Owner asked how it’s going", q: "“¿Cómo va? ¿Ha habido más visitas?”" },
+           { at: "2026-10-05T12:10", src: "cal", what: "Viewing done · R4601877", q: "Calendar: Viewing Bakker, San Pedro" },
+           { at: "2026-09-20T10:00", src: "wa", what: "Exclusive mandate signed", q: "“Firmado. Confío en ti, Jonathan.”" }] },
     { id: "isabel", name: "Isabel Moreno", flag: "🇪🇸", lang: "Spanish / English", role: "agent", stage: "offer", budget: "Seller side, R4588120",
       next: { text: "Present Sophie’s offer to her sellers", date: "2026-10-29", owner: "other", ev: "“I’ll present it to my sellers tonight.”" },
       profile: ["Co-broke 50/50", "Listing agent R4588120"], matches: ["R4588120"], flags: {},
@@ -1002,7 +1019,9 @@ function suggestNext(c) {
     case "new_lead": return c.role === "seller"
       ? { text: `Send ${f} the mandate agreement`, days: 1, owner: "agent" }
       : { text: `Ask ${f} what they’re looking for and when they’re here`, days: 1, owner: "agent" };
-    case "searching": return { text: `Send ${f} 2–3 properties`, days: 2, owner: "agent" };
+    case "searching": return c.role === "seller"
+      ? { text: `Send ${f} this week’s update on the listing`, days: 1, owner: "agent" }
+      : { text: `Send ${f} 2–3 properties`, days: 2, owner: "agent" };
     case "viewing": return { text: `Ask ${f} what they thought and whether to make an offer`, days: 2, owner: "agent" };
     case "offer": return { text: `Seller’s answer on ${f}’s offer`, days: 2, owner: "other" };
     case "reservation": return { text: `Lawyer sends ${f} the arras draft`, days: 5, owner: "other" };
@@ -1030,7 +1049,14 @@ function reasons(c) {
   if (f.silentAfterSend >= 3) r.push({ level: "red", text: `Silent ${f.silentAfterSend} days after receiving properties` });
   if (f.newMatch) r.push({ level: "red", text: "New Resales match", detail: `${f.newMatch} · ${PROPS[f.newMatch].area}` });
   if (f.viewingNoFollowUp) r.push({ level: "red", text: "Viewing done, no follow-up yet" });
+  // Sellers: an owner who has not heard from the agent in 14 days starts calling other agents.
+  if (c.role === "seller" && ACTIVE.has(c.stage)) {
+    const q = quietDays(c);
+    if (q >= 14) r.push({ level: "red", text: `Owner hasn’t heard from you in ${q} days`, detail: c.listing ? `${c.listing} · ${PROPS[c.listing].area}` : "" });
+  }
   if (ACTIVE.has(c.stage) && !c.next) r.push({ level: "red", text: "No next step" });
+  // Parked buyers: wake them after 60 days instead of forgetting them.
+  if (c.stage === "parked" && quietDays(c) >= 60) r.push({ level: "amber", text: `Parked ${quietDays(c)} days. Still looking?` });
   if (c.next) {
     const n = daysBetween(NOW, c.next.date);
     if (n < 0) r.push({ level: "red", text: `Next step overdue by ${-n} day${n === -1 ? "" : "s"}` });
@@ -1038,6 +1064,8 @@ function reasons(c) {
   }
   return r;
 }
+// Days since the last message in either direction.
+const quietDays = c => c.tl.length ? daysBetween(d(c.tl[0].at), NOW) : 0;
 function hotGroups() {
   const needs = [], coming = [];
   for (const c of state.clients) {
@@ -1474,10 +1502,12 @@ function replyKind(c) {
   if (f.silentAfterSend) return "nudge";
   if (f.newMatch) return "match";
   if (f.viewingNoFollowUp) return "feedback";
+  if (c.role === "seller") return "owner";
+  if (c.stage === "parked") return "wake";
   return "checkin";
 }
 function replyText(c, lang) {
-  const kind = replyKind(c), area = c.flags.newMatch ? PROPS[c.flags.newMatch].area.split(",")[0] : "";
+  const kind = replyKind(c), area = c.flags.newMatch ? PROPS[c.flags.newMatch].area.split(",")[0] : c.listing ? PROPS[c.listing].area.split(",")[0] : "";
   return DRAFTS[lang][kind](firstName(c), area);
 }
 function searchResults(q) {
