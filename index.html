@@ -14,7 +14,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Marbella CRM">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,400;1,400&display=swap">
 <style>
 /* Layout: nav rail + working area on desktop; bottom tab bar + one screen at a time on phones. */
 :root {
@@ -313,6 +313,90 @@ main > * { animation: fadein .18s ease-out; }
 @keyframes fadein { from { opacity: .6; transform: translateY(4px); } }
 @media (prefers-reduced-motion: reduce) { main > * { animation: none; } .card:hover { transform: none; } }
 
+/* Mini-site: a different world from the CRM. Warm stone, deep green, serif headlines. Single theme by design. */
+.site-frame { background: #F4EFE6; min-height: 100%; }
+.site-bar { position: sticky; top: 0; z-index: 5; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 10px 16px; background: var(--surface); border-bottom: 1px solid var(--line); }
+.site-url { display: flex; align-items: center; gap: 6px; font-family: var(--mono); font-size: 12.5px; background: var(--sunk); padding: 6px 12px; border-radius: 99px; color: var(--ink); }
+.site-url svg { width: 13px; height: 13px; color: var(--green); }
+.site-bar-r { margin-left: auto; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.site { --s-ink: #1E2A24; --s-muted: #6B6459; --s-accent: #B5533C; --s-green: #17332A; --s-stone: #F4EFE6; --s-stone2: #EAE2D4; font-family: "IBM Plex Sans", system-ui, sans-serif; color: var(--s-ink); background: var(--s-stone); }
+.site h1, .site h2 { font-family: "Playfair Display", Georgia, "Times New Roman", serif; font-weight: 400; letter-spacing: -0.01em; line-height: 1.05; margin: 0; }
+.site h1 em, .site h2 em { font-style: italic; color: var(--s-accent); }
+.site-hero h1 em { color: #FFF3E0; }
+.site p { font-size: 15.5px; line-height: 1.7; color: #3A3630; max-width: 60ch; margin: 0; }
+.site-k { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--s-accent); font-weight: 600; margin-bottom: 14px; }
+.site section { padding-block: 64px; padding-left: max(24px, 6vw, env(safe-area-inset-left, 0px)); padding-right: max(24px, 6vw, env(safe-area-inset-right, 0px)); }
+.site-hero { position: relative; min-height: 640px; display: grid; align-content: space-between; color: #FFF8EE; isolation: isolate; }
+.site-hero .ph.site-cover { position: absolute; inset: 0; z-index: -1; }
+.site-hero .ph.site-cover::before { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(10,20,16,.55), rgba(10,20,16,.15) 40%, rgba(10,20,16,.55)); z-index: 1; }
+.site-nav { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 22px max(24px, 6vw); flex-wrap: wrap; }
+.site-brand b { font-family: "Playfair Display", Georgia, serif; font-weight: 400; letter-spacing: .22em; text-transform: uppercase; font-size: 15px; display: block; }
+.site-brand span { font-size: 9.5px; letter-spacing: .2em; text-transform: uppercase; opacity: .8; }
+.site-nav nav { display: flex; gap: 22px; align-items: center; font-size: 11px; letter-spacing: .16em; text-transform: uppercase; }
+.site-nav nav a { color: inherit; text-decoration: none; }
+.site-lang button { background: none; border: 0; color: inherit; font: inherit; letter-spacing: .16em; opacity: .6; padding: 0 2px; }
+.site-lang button[aria-pressed="true"] { opacity: 1; text-decoration: underline; text-underline-offset: 4px; }
+.site-lang i { opacity: .5; font-style: normal; padding: 0 4px; }
+.site-hero-text { padding: 0 max(24px, 6vw) 56px; display: grid; gap: 18px; max-width: 620px; }
+.site-eyebrow { font-size: 11px; letter-spacing: .2em; text-transform: uppercase; opacity: .85; }
+.site-hero h1 { font-size: clamp(44px, 7vw, 88px); }
+.site-price { display: inline-flex; align-items: baseline; gap: 12px; background: rgba(10,20,16,.55); backdrop-filter: blur(8px); padding: 10px 16px; border-radius: 4px; width: max-content; }
+.site-price span { font-size: 10px; letter-spacing: .18em; text-transform: uppercase; opacity: .85; }
+.site-price b { font-size: 22px; font-weight: 500; }
+.site-hero-text p { color: #FFF8EE; opacity: .92; font-size: 15px; }
+.site-cta { color: inherit; text-decoration: none; font-size: 11px; letter-spacing: .18em; text-transform: uppercase; border: 1px solid rgba(255,248,238,.6); padding: 12px 18px; width: max-content; }
+.site-scroll { position: absolute; right: max(24px, 6vw); bottom: 24px; font-size: 9.5px; letter-spacing: .2em; text-transform: uppercase; opacity: .7; writing-mode: vertical-rl; transform: rotate(180deg); }
+.site-story { display: grid; grid-template-columns: 1fr 1.4fr; gap: 40px; align-items: start; }
+.site-story .site-k { grid-column: 1; }
+.site-story h2 { grid-column: 2; font-size: clamp(34px, 4.2vw, 56px); margin-bottom: 18px; }
+.site-story p { grid-column: 2; }
+.site-gallery { background: var(--s-green); color: #F4EFE6; }
+.site-gallery .site-k { color: #D9B99B; }
+.site-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.site-grid .ph { height: 260px; }
+.site-grid .ph.wide { grid-column: span 2; height: 420px; }
+.site-grid .ph:nth-child(4) { grid-row: span 1; }
+.site-details { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; background: var(--s-stone2); }
+.site-details h2 { font-size: clamp(32px, 3.6vw, 48px); margin-bottom: 16px; }
+.site-details p + p { margin-top: 12px; }
+.site-extras { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
+.site-extras span { font-size: 12px; border: 1px solid #CFC5B3; border-radius: 99px; padding: 5px 12px; color: #4A443B; }
+.site-facts { margin: 0; align-self: center; }
+.site-facts div { display: grid; grid-template-columns: 1fr 1.3fr; gap: 16px; padding: 14px 0; border-bottom: 1px solid #CFC5B3; }
+.site-facts div:first-child { border-top: 1px solid #CFC5B3; }
+.site-facts dt { font-size: 13px; color: var(--s-muted); }
+.site-facts dd { margin: 0; font-family: "Playfair Display", Georgia, serif; font-size: 18px; }
+.site-plans { padding-block: 40px; }
+.site-plans-box { display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap; border: 1px dashed #BDB29E; border-radius: 6px; padding: 22px 24px; }
+.site-plans-box b { font-family: "Playfair Display", Georgia, serif; font-weight: 400; font-size: 22px; display: block; margin-bottom: 4px; }
+.site-plans-box p { font-size: 14px; }
+.site-btn { display: inline-flex; align-items: center; gap: 10px; background: var(--s-green); color: #F4EFE6; border: 1px solid var(--s-green); padding: 14px 22px; font-size: 11.5px; letter-spacing: .16em; text-transform: uppercase; cursor: pointer; }
+.site-btn svg { width: 16px; height: 16px; }
+.site-btn.ghost { background: transparent; color: var(--s-green); }
+.site-area { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; }
+.site-area h2 { font-size: clamp(32px, 3.6vw, 48px); margin-bottom: 16px; }
+.site-map { border-radius: 6px; overflow: hidden; }
+.site-map-note { font-size: 12px; color: var(--s-muted); margin-top: 8px; }
+.site-contact { background: var(--s-green); color: #F4EFE6; text-align: center; display: grid; justify-items: center; gap: 16px; }
+.site-contact .site-k { color: #D9B99B; margin: 0; }
+.site-contact h2 { font-size: clamp(34px, 4.2vw, 56px); }
+.site-contact p { color: #E6DECF; text-align: center; }
+.site-contact .site-btn { background: #F4EFE6; color: var(--s-green); border-color: #F4EFE6; }
+.site-agent { font-size: 12.5px; letter-spacing: .08em; opacity: .8; }
+.site-foot { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding: 22px max(24px, 6vw); font-size: 11px; color: var(--s-muted); border-top: 1px solid #DDD3C2; }
+.listing-acts { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+@media (max-width: 820px) {
+  .site-story, .site-details, .site-area { grid-template-columns: 1fr; gap: 24px; }
+  .site-story h2, .site-story p, .site-story .site-k { grid-column: 1; }
+  .site-grid { grid-template-columns: 1fr 1fr; }
+  .site-grid .ph { height: 160px; }
+  .site-grid .ph.wide { height: 240px; }
+  .site-hero { min-height: 560px; }
+  .site-nav nav a { display: none; }
+  .site section { padding-block: 44px; }
+  .site-scroll, .site-bar-r .muted { display: none; }
+}
+
 /* Morning brief */
 .brief { margin: 12px 16px 4px; background: var(--surface); border-radius: 16px; box-shadow: var(--shadow); padding: 14px 16px; display: grid; gap: 10px; }
 .brief-head { display: flex; justify-content: space-between; align-items: center; }
@@ -481,6 +565,8 @@ const ICON = {
   cal: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>',
   mail: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>',
   sys: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/></svg>',
+  globe: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>',
+  lock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>',
   search: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>',
   clock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
   check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg>',
@@ -612,6 +698,59 @@ const TEXTS = {
              nl: "De golfclub El Paraíso ligt op drie minuten, San Pedro en Estepona allebei binnen vijftien minuten.",
              de: "Der Golfclub El Paraíso ist drei Minuten entfernt, San Pedro und Estepona jeweils in unter fünfzehn Minuten." } },
 };
+// Mini-site copy for the agent's own mandates. Written by the LLM from the facts plus the agent's three lines; the agent can edit every line.
+const SITES = {
+  R4512345: { slug: "casa-aloha", name: "Casa Aloha", domain: "casa-aloha.homes",
+    en: { eyebrow: "A private introduction · Nueva Andalucía", head: ["Mornings on the", "terrace."], tag: "A south-facing family villa in the Golf Valley, with a heated pool and the Aloha restaurants a short walk away.",
+          storyK: "A home with an easy rhythm", storyH: ["Some houses make the", "day feel longer."],
+          story: "The light arrives early on the south side and stays on the terrace until dinner. Las Brisas and Aloha are a short walk away, and the pool is heated for the months when the sea is not. Five bedrooms give everyone a corner of their own, and the open living room gathers everyone again at the end of the day.",
+          areaK: "Nueva Andalucía · Marbella", areaH: ["The Golf Valley,", "on foot."],
+          area: "Casa Aloha sits on a quiet cul-de-sac in the Golf Valley. Aloha’s restaurants, cafés and supermarkets are within walking distance, and Puerto Banús, the beach and the international schools are ten minutes by car. Centro Plaza adds shops and a Saturday market.",
+          plans: "Floor plans", plansNote: "The agent is preparing floor plans for the main level and the upper floor.", contactK: "Arrange a visit", contactH: "See it for yourself.",
+          contact: "Jonathan shows Casa Aloha by appointment. Send a message and he will come back the same day." },
+    es: { eyebrow: "Una presentación privada · Nueva Andalucía", head: ["Mañanas en la", "terraza."], tag: "Villa familiar orientada al sur en el Valle del Golf, con piscina climatizada y los restaurantes de Aloha a un paseo.",
+          storyK: "Una casa con su propio ritmo", storyH: ["Hay casas que alargan", "el día."],
+          story: "La luz llega temprano por el lado sur y se queda en la terraza hasta la cena. Las Brisas y Aloha están a un paseo, y la piscina es climatizada para los meses en los que el mar no lo es. Cinco dormitorios dan a cada uno su rincón, y el salón abierto vuelve a reunir a todos al final del día.",
+          areaK: "Nueva Andalucía · Marbella", areaH: ["El Valle del Golf,", "a pie."],
+          area: "Casa Aloha está en una tranquila calle sin salida del Valle del Golf. Los restaurantes, cafeterías y supermercados de Aloha quedan a un paseo, y Puerto Banús, la playa y los colegios internacionales a diez minutos en coche. Centro Plaza añade tiendas y un mercadillo los sábados.",
+          plans: "Planos", plansNote: "El agente está preparando los planos de la planta principal y la planta alta.", contactK: "Concertar una visita", contactH: "Véala en persona.",
+          contact: "Jonathan enseña Casa Aloha con cita previa. Envíe un mensaje y responderá el mismo día." } },
+  R4601877: { slug: "casa-boulevard", name: "Casa Boulevard", domain: "casa-boulevard.homes",
+    en: { eyebrow: "A private introduction · San Pedro", head: ["Five minutes", "from the sea."], tag: "A renovated corner townhouse on the beach side of San Pedro, in a small gated community of twelve homes.",
+          storyK: "Renovated in 2023", storyH: ["Everything done,", "nothing to do."],
+          story: "The house was renovated from the ground up in 2023: kitchen, bathrooms, windows and a roof terrace with a glimpse of the sea. The corner position gives the garden sun from morning to late afternoon, and the community of twelve homes keeps things quiet.",
+          areaK: "San Pedro de Alcántara", areaH: ["The boulevard", "at the end of the street."],
+          area: "San Pedro’s boulevard, with its cafés, playgrounds and Sunday strolls, is five minutes on foot, and the beach promenade a few minutes more. Puerto Banús is ten minutes by car, Marbella twenty.",
+          plans: "Floor plans", plansNote: "The agent is preparing floor plans for the three floors and the roof terrace.", contactK: "Arrange a visit", contactH: "See it for yourself.",
+          contact: "Jonathan shows Casa Boulevard by appointment. Send a message and he will come back the same day." },
+    es: { eyebrow: "Una presentación privada · San Pedro", head: ["A cinco minutos", "del mar."], tag: "Adosado de esquina reformado en el lado de playa de San Pedro, en una pequeña urbanización cerrada de doce viviendas.",
+          storyK: "Reformado en 2023", storyH: ["Todo hecho,", "nada que hacer."],
+          story: "La casa se reformó por completo en 2023: cocina, baños, ventanas y un solárium con vistas parciales al mar. La posición de esquina da sol al jardín desde la mañana hasta media tarde, y la comunidad de doce viviendas mantiene la tranquilidad.",
+          areaK: "San Pedro de Alcántara", areaH: ["El bulevar", "al final de la calle."],
+          area: "El bulevar de San Pedro, con sus cafeterías, parques y paseos de domingo, está a cinco minutos a pie, y el paseo marítimo a pocos minutos más. Puerto Banús a diez minutos en coche, Marbella a veinte.",
+          plans: "Planos", plansNote: "El agente está preparando los planos de las tres plantas y el solárium.", contactK: "Concertar una visita", contactH: "Véala en persona.",
+          contact: "Jonathan enseña Casa Boulevard con cita previa. Envíe un mensaje y responderá el mismo día." } },
+  R4644210: { slug: "villa-mirador", name: "Villa Mirador", domain: "villa-mirador.homes",
+    en: { eyebrow: "A private introduction · El Paraíso Alto", head: ["Gibraltar on the", "horizon."], tag: "A villa on an elevated plot in El Paraíso Alto, with open views of the Mediterranean and, on clear days, the coast of Africa.",
+          storyK: "A house built around a view", storyH: ["Every room looks", "the same way."],
+          story: "The plot sits high enough that nothing will ever be built in front of it. The terrace runs the full width of the house and faces the sea, Gibraltar and the Rif mountains on clear days. Five bedrooms, a heated pool and a quiet street in a gated community.",
+          areaK: "El Paraíso Alto · Benahavís", areaH: ["Between the golf", "and the coast."],
+          area: "El Paraíso golf club is three minutes away, and the coast road puts San Pedro and Estepona within fifteen minutes. The international schools of the Golden Mile and Sotogrande are both within half an hour.",
+          plans: "Floor plans", plansNote: "The agent is preparing floor plans for the two levels.", contactK: "Arrange a visit", contactH: "See it for yourself.",
+          contact: "Jonathan shows Villa Mirador by appointment. Send a message and he will come back the same day." },
+    es: { eyebrow: "Una presentación privada · El Paraíso Alto", head: ["Gibraltar en el", "horizonte."], tag: "Villa en una parcela elevada de El Paraíso Alto, con vistas abiertas al Mediterráneo y, en días claros, a la costa de África.",
+          storyK: "Una casa hecha alrededor de una vista", storyH: ["Todas las habitaciones", "miran hacia el mismo lado."],
+          story: "La parcela está lo bastante alta como para que nunca se construya delante. La terraza recorre toda la fachada y mira al mar, a Gibraltar y, en días claros, al Rif. Cinco dormitorios, piscina climatizada y una calle tranquila en urbanización cerrada.",
+          areaK: "El Paraíso Alto · Benahavís", areaH: ["Entre el golf", "y la costa."],
+          area: "El club de golf El Paraíso está a tres minutos, y la carretera de la costa deja San Pedro y Estepona a menos de quince. Los colegios internacionales de la Milla de Oro y Sotogrande quedan a media hora.",
+          plans: "Planos", plansNote: "El agente está preparando los planos de las dos plantas.", contactK: "Concertar una visita", contactH: "Véala en persona.",
+          contact: "Jonathan enseña Villa Mirador con cita previa. Envíe un mensaje y responderá el mismo día." } },
+};
+const SITE_T = {
+  en: { price: "Asking price", discover: "Discover the house", scroll: "Scroll", details: "The details", detailsK: "A first overview", gallery: "Photographs", galleryK: "A closer look", map: "Approximate area, not the exact location.", wa: "Message Jonathan on WhatsApp", ref: "Ref.", foot: "A private offering · Information is indicative and does not form part of any contract.", upload: "Upload floor plans", beds: "Bedrooms", baths: "Bathrooms", built: "Built area", plot: "Plot", location: "Location", security: "Security", gated: "Gated community", street: "Quiet residential street" },
+  es: { price: "Precio", discover: "Descubra la casa", scroll: "Deslice", details: "Los detalles", detailsK: "Una primera visión", gallery: "Fotografías", galleryK: "De cerca", map: "Zona aproximada, no la ubicación exacta.", wa: "Escribir a Jonathan por WhatsApp", ref: "Ref.", foot: "Una oferta privada · Información orientativa, sin valor contractual.", upload: "Subir planos", beds: "Dormitorios", baths: "Baños", built: "Superficie construida", plot: "Parcela", location: "Ubicación", security: "Seguridad", gated: "Urbanización cerrada", street: "Calle residencial tranquila" },
+};
+
 const EXTRAS = {
   underfloor: { en: "Underfloor heating", es: "Suelo radiante", sv: "Golvvärme", nl: "Vloerverwarming", de: "Fußbodenheizung" },
   aircon:     { en: "Air conditioning", es: "Aire acondicionado", sv: "Luftkonditionering", nl: "Airconditioning", de: "Klimaanlage" },
@@ -829,7 +968,7 @@ function seedHandled() {
   ];
 }
 
-let state = { clients: seedClients(), handled: seedHandled(), horizon: 7, listings: ["R4512345", "R4601877"], sim: 0, sentLog: [], add: { step: 0, answers: [] }, sheetLang: "en", editing: null, modal: null, snoozeOpen: null, wa: { appOpenedDaysAgo: 11, dismissed: false } };
+let state = { clients: seedClients(), handled: seedHandled(), horizon: 7, listings: ["R4512345", "R4601877"], sim: 0, sentLog: [], add: { step: 0, answers: [] }, sheetLang: "en", siteLang: "en", editing: null, modal: null, snoozeOpen: null, wa: { appOpenedDaysAgo: 11, dismissed: false } };
 const C = id => state.clients.find(c => c.id === id);
 
 // ---------- Suggested next step: what an agent would do next, by stage ----------
@@ -903,7 +1042,7 @@ function renderRail(route) {
     ["add", "Add property", ICON.plus],
     ["live", "Live demo", ICON.play],
   ];
-  const cur = route.startsWith("client") || route.startsWith("send") || route.startsWith("pdf") ? "hotlist" : route.startsWith("sheet") ? "listings" : route;
+  const cur = route.startsWith("client") || route.startsWith("send") || route.startsWith("pdf") ? "hotlist" : route.startsWith("sheet") || route.startsWith("site") ? "listings" : route;
   $rail.innerHTML = `
     <div class="brand"><b>Marbella CRM</b><span class="demo-tag">Demo</span></div>
     <button class="search-btn" data-act="search">${ICON.search}<span>Search</span><kbd>⌘K</kbd></button>
@@ -1103,7 +1242,7 @@ function renderListings() {
           <div><b>${esc(p.title)}</b><div class="muted">${p.beds} bed · ${p.baths} bath · ${p.built} m² built${p.plot ? ` · ${p.plot.toLocaleString("en-GB")} m² plot` : ""}</div></div>
           <div class="stats"><div class="stat"><b>${p.opens}</b><span>sheet opens, 7 days</span></div><div class="stat"><b>${p.clicks}</b><span>WhatsApp taps</span></div><div class="stat"><b>${buyers.length}</b><span>matching buyers</span></div></div>
           <div class="muted" style="font-size:12px">${buyers.map(b => esc(b.name)).join(", ") || "No matching buyers yet"}</div>
-          <div><a class="btn small" href="#sheet-${p.ref}">${ICON.eye} Open sheet</a></div></div></article>`;
+          <div class="listing-acts"><a class="btn small" href="#sheet-${p.ref}">${ICON.eye} Sheet</a>${SITES[p.ref] ? `<a class="btn small primary" href="#site-${p.ref}">${ICON.globe} Mini-site</a><span class="muted mono small">${SITES[p.ref].domain}</span>` : ""}</div></div></article>`;
     }).join("")}</div></div>`;
 }
 
@@ -1121,6 +1260,59 @@ function mapSVG(area) {
     <circle cx="${x}" cy="${y}" r="16" fill="#0F6B57" opacity=".18"/><circle cx="${x}" cy="${y}" r="5" fill="#0F6B57"/>
     <text x="300" y="140" font-size="9" fill="#5A7F93" text-anchor="end" font-family="IBM Plex Sans, sans-serif">Mediterranean</text>
   </svg>`;
+}
+
+// ---------- Mini-site: the property's own page on its own address ----------
+function siteHTML(p, L) {
+  const site = SITES[p.ref], c = site[L], t = SITE_T[L], seeds = coverSeeds(p);
+  const facts = [[t.location, p.area], [t.beds, p.beds], [t.baths, p.baths], [t.built, `${fmtNum(p.built, L)} m²`]]
+    .concat(p.plot ? [[t.plot, `${fmtNum(p.plot, L)} m²`]] : [])
+    .concat([[t.security, p.features.includes("gated") ? t.gated : t.street], [t.price, money(p.price)]]);
+  const extras = p.extras.map(k => EXTRAS[k][L]);
+  return `<div class="site" lang="${L}">
+    <header class="site-hero">${photo(seeds[0], "", "site-cover")}
+      <div class="site-nav"><div class="site-brand"><b>${esc(site.name)}</b><span>${esc(p.area.split(",")[0])} · Marbella</span></div>
+        <nav><a href="#site-${p.ref}">${t.details}</a><a href="#site-${p.ref}">${t.gallery}</a><span class="site-lang">${["en", "es"].map(l => `<button data-act="site-lang" data-l="${l}" aria-pressed="${L === l}">${l.toUpperCase()}</button>`).join("<i>/</i>")}</span></nav></div>
+      <div class="site-hero-text"><div class="site-eyebrow">${esc(c.eyebrow)}</div>
+        <h1>${esc(c.head[0])} <em>${esc(c.head[1])}</em></h1>
+        <div class="site-price"><span>${t.price}</span><b>${money(p.price)}</b></div>
+        <p>${esc(c.tag)}</p><a class="site-cta" href="#site-${p.ref}">${t.discover} ↓</a></div>
+      <div class="site-scroll">${t.scroll}</div></header>
+
+    <section class="site-story"><div class="site-k">${esc(c.storyK)}</div>
+      <h2>${esc(c.storyH[0])} <em>${esc(c.storyH[1])}</em></h2><p>${esc(c.story)}</p></section>
+
+    <section class="site-gallery"><div class="site-k">${t.galleryK}</div>
+      <div class="site-grid">${seeds.slice(1).concat([p.seed + 8, p.seed + 10]).map((sd, i) => photo(sd, "", i === 0 ? "wide" : "")).join("")}</div></section>
+
+    <section class="site-details"><div><div class="site-k">${t.detailsK}</div><h2>${t.details}</h2>
+        <p>${esc(describe(p, L, p.features.slice(0, 3))[0])}</p><p>${esc(describe(p, L, p.features.slice(0, 3))[1])}</p>
+        <div class="site-extras">${extras.map(x => `<span>${esc(x)}</span>`).join("")}</div></div>
+      <dl class="site-facts">${facts.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(String(v))}</dd></div>`).join("")}</dl></section>
+
+    <section class="site-plans"><div class="site-k">${esc(c.plans)}</div>
+      <div class="site-plans-box"><div><b>${esc(c.plans)}</b><p>${esc(c.plansNote)}</p></div><button class="site-btn ghost" data-act="site-upload">${t.upload}</button></div></section>
+
+    <section class="site-area"><div><div class="site-k">${esc(c.areaK)}</div><h2>${esc(c.areaH[0])} <em>${esc(c.areaH[1])}</em></h2><p>${esc(c.area)}</p></div>
+      <div><div class="site-map">${mapSVG(p.area)}</div><div class="site-map-note">${t.map}</div></div></section>
+
+    <section class="site-contact"><div class="site-k">${esc(c.contactK)}</div><h2>${esc(c.contactH)}</h2><p>${esc(c.contact)}</p>
+      <button class="site-btn" data-act="wa-sheet" data-ref="${p.ref}">${ICON.wa} ${t.wa}</button>
+      <div class="site-agent">${AGENT.name} · ${AGENT.phone}</div></section>
+
+    <footer class="site-foot"><span>${esc(site.name)} · ${t.ref} ${p.ref}</span><span>${t.foot}</span></footer>
+  </div>`;
+}
+function renderSite(ref) {
+  const p = PROPS[ref] || (ref === NEW_PROP.ref ? NEW_PROP : null);
+  if (!p || !SITES[ref]) return renderListings();
+  const site = SITES[ref], L = state.siteLang;
+  $main.innerHTML = `<div class="site-frame">
+    <div class="site-bar"><a class="btn small" href="#listings">${ICON.back} Listings</a>
+      <div class="site-url">${ICON.lock}<span>https://${esc(site.domain)}</span></div>
+      <div class="site-bar-r"><span class="muted small">Generated from the listing and your three lines. Every line is editable.</span><a class="btn small" href="#sheet-${p.ref}">${ICON.eye} Sheet version</a></div></div>
+    ${siteHTML(p, L)}
+  </div>`;
 }
 
 function renderSheet(ref) {
@@ -1326,8 +1518,8 @@ function renderAdd() {
   });
   if (a.step >= 5) {
     msgs.push(`<div class="b in"><div class="who">Marbella CRM</div><div>Cover photo: <b>#3</b>, the terrace with the sea view. Photo <b>#5</b> is blurry, so I left it out. Retake it when you’re there on Monday?</div></div>`);
-    msgs.push(`<div class="b in"><div class="who">Marbella CRM</div><div>Done. Sheet and mini-site are live in English, Spanish and Swedish.</div>
-      <div><a class="btn small" href="#sheet-${NEW_PROP.ref}">${ICON.eye} Open sheet</a></div></div>`);
+    msgs.push(`<div class="b in"><div class="who">Marbella CRM</div><div>Done. The sheet is live in five languages, and the house has its own site at <b>villa-mirador.homes</b> in English and Spanish. I called it Villa Mirador after the view; rename it if you like.</div>
+      <div class="replies"><a class="btn small primary" href="#site-${NEW_PROP.ref}">${ICON.globe} Open the site</a><a class="btn small" href="#sheet-${NEW_PROP.ref}">${ICON.eye} Open sheet</a></div></div>`);
     const buyers = ["olga", "mark", "henrik"].map(C);
     if (!a.sent) {
       msgs.push(`<div class="b in"><div class="who">Marbella CRM</div><div>3 buyers on your list match: ${buyers.map(b => `<b>${esc(b.name)}</b>`).join(", ")}. Send them the sheet on WhatsApp?</div>
@@ -1344,7 +1536,8 @@ function renderAdd() {
       <div class="chat" aria-live="polite">${msgs.join("")}</div>
       <section class="panel"><h3>What comes out</h3>
         <ul class="applied">${[
-          ["Sheet and mini-site at its own link", a.step >= 5],
+          ["Sheet in five languages", a.step >= 5],
+          ["Mini-site on its own address, EN/ES", a.step >= 5],
           ["Description in the buyer’s language", a.step >= 5],
           ["Cover photo picked, bad photos flagged", a.step >= 5],
           ["Matching buyers offered the sheet", !!a.sent],
@@ -1425,6 +1618,7 @@ function route() {
   else if (h === "funnel") renderFunnel();
   else if (h === "listings") renderListings();
   else if (h.startsWith("sheet-")) renderSheet(h.slice(6));
+  else if (h.startsWith("site-")) renderSite(h.slice(5));
   else if (h.startsWith("send-")) { const [, cid, ref] = h.split("-"); renderCompose(cid, ref); }
   else if (h.startsWith("pdf-")) { const [, cid, ref] = h.split("-"); renderPdf(cid, ref); }
   else if (h === "add") renderAdd();
@@ -1525,6 +1719,8 @@ document.addEventListener("click", e => {
     case "wa": toast(`In the live version this opens the WhatsApp chat with ${c ? c.name : "the client"}.`); break;
     case "wa-sheet": toast(`In the live version this opens WhatsApp with ${AGENT.name}, and the tap is logged.`); break;
     case "lang": state.sheetLang = el.dataset.l; rerender(); break;
+    case "site-lang": state.siteLang = el.dataset.l; rerender(); window.scrollTo(0, 0); break;
+    case "site-upload": toast("In the live app this opens a file picker. Plans appear on the site as a per-floor viewer."); break;
     case "add-next": state.add.step = 1; rerender(); break;
     case "add-answer": state.add.answers.push(el.dataset.a); state.add.step = state.add.answers.length === 3 ? 5 : state.add.answers.length + 1;
       if (state.add.step === 5 && !state.listings.includes(NEW_PROP.ref)) {
