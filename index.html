@@ -262,6 +262,28 @@ main { min-width: 0; overflow: auto; }
 .interp { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; font-size: 13px; }
 .interp dt { color: var(--muted); }
 .interp dd { margin: 0; font-weight: 500; }
+.add-hint { display: flex; gap: 10px; align-items: flex-start; font-size: 13px; color: var(--muted); background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
+.add-hint svg { width: 18px; height: 18px; color: var(--green); flex: none; }
+.b.draft { border: 1px dashed var(--accent); background: var(--surface); }
+.draft-text { outline: none; min-height: 1.4em; }
+.draft-text:focus { background: rgba(15,107,87,.06); border-radius: 4px; }
+.read-card { display: grid; gap: 4px; background: rgba(0,0,0,.05); border-radius: 8px; padding: 8px 10px; margin: 8px 0; font-size: 13px; }
+.read-card div { display: flex; justify-content: space-between; gap: 12px; }
+.read-card span { color: var(--muted); }
+.b.warn { border-left: 3px solid #C98A1B; }
+.add-stages { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; }
+.add-stages span { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; padding: 6px 12px 6px 6px; border-radius: 99px; border: 1px solid var(--line); color: var(--muted); background: var(--surface); }
+.add-stages i { font-style: normal; width: 20px; height: 20px; border-radius: 50%; display: grid; place-items: center; font-size: 11px; font-weight: 600; background: var(--sunk); }
+.add-stages .cur { color: var(--ink); border-color: var(--accent); }
+.add-stages .cur i { background: var(--accent); color: #fff; }
+.add-stages .done { color: var(--ink); }
+.add-stages .done i { background: var(--green); color: #fff; }
+.listing-fields { margin: 0 0 16px; display: grid; }
+.listing-fields div { display: grid; grid-template-columns: 1fr 1.2fr; gap: 10px; padding: 7px 0; border-bottom: 1px solid var(--line); font-size: 13px; color: var(--muted); }
+.listing-fields div.on { color: var(--ink); }
+.listing-fields div.on dd { font-weight: 600; }
+.listing-fields dd { margin: 0; }
+.panel h4 { font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin: 0 0 8px; }
 .applied { display: grid; gap: 6px; font-size: 13px; margin: 0; padding: 0; list-style: none; }
 .applied li { display: flex; gap: 8px; }
 .applied svg { width: 16px; height: 16px; color: var(--green); flex: none; margin-top: 2px; }
@@ -567,6 +589,8 @@ const ICON = {
   sys: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/></svg>',
   globe: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>',
   lock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>',
+  send: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>',
+  copy: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>',
   search: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>',
   clock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
   check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg>',
@@ -1501,25 +1525,45 @@ const ADD_QS = [
   { q: "Community fees and IBI per year?", opts: ["€2,400 · €3,100", "Skip for now"] },
 ];
 function renderAdd() {
-  const a = state.add;
+  const a = state.add, Q = ADD_QS;
+  const qi = a.step - 2; // which question is open (0..2)
   const msgs = [];
-  msgs.push(`<div class="b out"><div class="thumbs">${[0, 1, 2, 3, 4, 5].map(i => photo(i + 7, `${i + 1}`, a.step >= 5 ? (i === 2 ? "cover" : i === 4 ? "bad" : "") : "")).join("")}</div>
-    <div>New mandate. Villa El Paraíso Alto, 5 bed, sea views, €2.95M. Owner Carlos Ruiz.</div><div class="ts">10:31</div></div>`);
+  const thumbs = `<div class="thumbs">${[0, 1, 2, 3, 4, 5].map(i => photo(i + 7, `${i + 1}`, a.step >= 5 ? (i === 2 ? "cover" : i === 4 ? "bad" : "") : "")).join("")}</div>`;
+  const lines = "New mandate. Villa in El Paraíso Alto, 5 bed, sea views, €2.95M. Owner Carlos Ruiz.";
+  // 1. Send
   if (a.step === 0) {
-    msgs.push(`<div class="replies"><button class="btn primary" data-act="add-next">Send to Marbella CRM</button></div>`);
+    msgs.push(`<div class="add-hint">${ICON.wa}<span>Marbella CRM is a contact in your WhatsApp. You send it photos and a few lines, the way you would to a colleague.</span></div>`);
+    msgs.push(`<div class="b out draft">${thumbs}<div class="draft-text" contenteditable="true" spellcheck="false">${lines}</div><div class="ts">Draft</div></div>`);
+    msgs.push(`<div class="replies"><button class="btn primary" data-act="add-send-msg">${ICON.send} Send</button><span class="muted small">Edit the text if you like. Three lines are enough.</span></div>`);
+  } else {
+    msgs.push(`<div class="b out">${thumbs}<div>${esc(a.text || lines)}</div><div class="ts">10:31</div></div>`);
   }
-  if (a.step >= 1) msgs.push(`<div class="b in"><div class="who">Marbella CRM</div><div>Got it, 6 photos. There’s no Resales listing for this villa yet, so I need three things. Everything else I have.</div><div class="ts">10:31</div></div>`);
-  ADD_QS.forEach((q, i) => {
-    if (a.step >= i + 1) {
-      msgs.push(`<div class="b in"><div class="who">Marbella CRM · question ${i + 1} of 3</div><div>${q.q}</div></div>`);
-      if (a.answers[i]) msgs.push(`<div class="b out"><div>${esc(a.answers[i])}</div><div class="ts">10:3${2 + i}</div></div>`);
-      else msgs.push(`<div class="replies">${q.opts.map(o => `<button class="btn small" data-act="add-answer" data-a="${esc(o)}">${esc(o)}</button>`).join("")}</div>`);
-    }
-  });
+  // 2. Confirm what was understood
+  if (a.step >= 1) {
+    msgs.push(`<div class="b in"><div class="who">Marbella CRM</div><div>Got it. This is what I read from your lines and the photos:</div>
+      <div class="read-card">${[["Type", "Villa"], ["Area", "El Paraíso Alto, Benahavís"], ["Bedrooms", "5"], ["Asking price", "€2,950,000"], ["Owner", "Carlos Ruiz"], ["Photos", "6"], ["Views", "Sea, from the terrace photos"]].map(([k, v]) => `<div><span>${k}</span><b>${v}</b></div>`).join("")}</div>
+      <div>No Resales listing for this one yet, so it goes in as your own mandate. Correct?</div><div class="ts">10:31</div></div>`);
+    if (a.step === 1) msgs.push(`<div class="replies"><button class="btn small primary" data-act="add-confirm">Yes, correct</button><button class="btn small" data-act="add-fix">Change something</button></div>`);
+    else msgs.push(`<div class="b out"><div>Yes, correct</div><div class="ts">10:32</div></div>`);
+  }
+  // 3. Fill the gaps
+  if (a.step >= 2) {
+    msgs.push(`<div class="b in"><div class="who">Marbella CRM</div><div>Three things are missing for the sheet. Everything else I have.</div></div>`);
+    Q.forEach((q, i) => {
+      if (a.step >= i + 2) {
+        msgs.push(`<div class="b in"><div class="who">Gap ${i + 1} of 3</div><div>${q.q}</div></div>`);
+        if (a.answers[i]) msgs.push(`<div class="b out"><div>${esc(a.answers[i])}</div><div class="ts">10:3${3 + i}</div></div>`);
+        else msgs.push(`<div class="replies">${q.opts.map(o => `<button class="btn small" data-act="add-answer" data-a="${esc(o)}">${esc(o)}</button>`).join("")}</div>`);
+      }
+    });
+  }
+  // 4. Done
   if (a.step >= 5) {
     msgs.push(`<div class="b in"><div class="who">Marbella CRM</div><div>Cover photo: <b>#3</b>, the terrace with the sea view. Photo <b>#5</b> is blurry, so I left it out. Retake it when you’re there on Monday?</div></div>`);
     msgs.push(`<div class="b in"><div class="who">Marbella CRM</div><div>Done. The sheet is live in five languages, and the house has its own site at <b>villa-mirador.homes</b> in English and Spanish. I called it Villa Mirador after the view; rename it if you like.</div>
       <div class="replies"><a class="btn small primary" href="#site-${NEW_PROP.ref}">${ICON.globe} Open the site</a><a class="btn small" href="#sheet-${NEW_PROP.ref}">${ICON.eye} Open sheet</a></div></div>`);
+    msgs.push(`<div class="b in warn"><div class="who">Resales Online</div><div>Resales is not updated automatically. Add the listing there yourself, and I’ll link it when the reference appears.</div>
+      <div class="replies"><button class="btn small" data-act="add-copy">${ICON.copy} Copy the facts for Resales</button></div></div>`);
     const buyers = ["olga", "mark", "henrik"].map(C);
     if (!a.sent) {
       msgs.push(`<div class="b in"><div class="who">Marbella CRM</div><div>3 buyers on your list match: ${buyers.map(b => `<b>${esc(b.name)}</b>`).join(", ")}. Send them the sheet on WhatsApp?</div>
@@ -1529,20 +1573,30 @@ function renderAdd() {
       msgs.push(`<div class="b in"><div class="who">Marbella CRM</div><div>${a.sent === "yes" ? "Sent. Opens will show up in each client’s timeline." : "OK. They stay as matches on each client."}</div></div>`);
     }
   }
+  // Side panel: the listing, filled in as the chat goes
+  const got = a.step >= 1, ans = i => a.answers[i];
+  const fields = [
+    ["Type", got ? "Villa" : ""], ["Area", got ? "El Paraíso Alto" : ""], ["Bedrooms", got ? "5" : ""], ["Asking price", got ? "€2,950,000" : ""], ["Owner", got ? "Carlos Ruiz" : ""], ["Photos", got ? "6" : ""],
+    ["Plot · built", ans(0) ? (ans(0).startsWith("Not") ? "To check" : ans(0)) : ""], ["Pool", ans(1) || ""], ["Fees · IBI", ans(2) ? (ans(2).startsWith("Skip") ? "To add" : ans(2)) : ""],
+    ["Cover photo", a.step >= 5 ? "#3, terrace" : ""],
+  ];
+  const stage = a.step === 0 ? "1 · Send" : a.step === 1 ? "2 · Confirm" : a.step < 5 ? `3 · Fill the gaps (${a.answers.length}/3)` : "4 · Done";
   $main.innerHTML = `<div class="page">
-    <div class="page-head"><div><h1>Add property</h1><p>Send photos and three lines. The system asks for what’s missing, at most three questions.</p></div>
+    <div class="page-head"><div><h1>Add property</h1><p>Send photos and a few lines on WhatsApp. The system reads them, asks for what’s missing, and builds the rest.</p></div>
       <button class="btn" data-act="add-reset">Start over</button></div>
+    <div class="add-stages">${["Send", "Confirm", "Fill the gaps", "Done"].map((t, i) => `<span class="${(a.step === 0 && i === 0) || (a.step === 1 && i === 1) || (a.step >= 2 && a.step < 5 && i === 2) || (a.step >= 5 && i === 3) ? "cur" : (a.step >= 5 || (i === 0 && a.step >= 1) || (i === 1 && a.step >= 2)) ? "done" : ""}"><i>${i + 1}</i>${t}</span>`).join("")}</div>
     <div class="chat-layout">
       <div class="chat" aria-live="polite">${msgs.join("")}</div>
-      <section class="panel"><h3>What comes out</h3>
+      <section class="panel"><h3>The listing <span class="muted small" style="font-weight:400">· ${stage}</span></h3>
+        <dl class="listing-fields">${fields.map(([k, v]) => `<div class="${v ? "on" : ""}"><dt>${k}</dt><dd>${v ? esc(v) : "—"}</dd></div>`).join("")}</dl>
+        <h4>What this creates</h4>
         <ul class="applied">${[
           ["Sheet in five languages", a.step >= 5],
           ["Mini-site on its own address, EN/ES", a.step >= 5],
-          ["Description in the buyer’s language", a.step >= 5],
           ["Cover photo picked, bad photos flagged", a.step >= 5],
           ["Matching buyers offered the sheet", !!a.sent],
+          ["Resales: added by you, then linked", false],
         ].map(([t, ok]) => `<li style="opacity:${ok ? 1 : .45}">${ICON.check}<span>${t}</span></li>`).join("")}</ul>
-        <div class="steps" aria-label="Progress">${[0, 1, 2, 3, 4, 5].map(i => `<span class="${a.step >= i + 1 || (i === 5 && a.sent) ? "on" : ""}"></span>`).join("")}</div>
       </section>
     </div></div>`;
 }
@@ -1721,8 +1775,12 @@ document.addEventListener("click", e => {
     case "lang": state.sheetLang = el.dataset.l; rerender(); break;
     case "site-lang": state.siteLang = el.dataset.l; rerender(); window.scrollTo(0, 0); break;
     case "site-upload": toast("In the live app this opens a file picker. Plans appear on the site as a per-floor viewer."); break;
-    case "add-next": state.add.step = 1; rerender(); break;
-    case "add-answer": state.add.answers.push(el.dataset.a); state.add.step = state.add.answers.length === 3 ? 5 : state.add.answers.length + 1;
+    case "add-send-msg": { const d = document.querySelector(".draft-text"); state.add.text = d ? d.textContent.trim() : ""; state.add.step = 1; rerender(); break; }
+    case "add-confirm": state.add.step = 2; rerender(); break;
+    case "add-fix": toast("In the live app you just reply in the chat, for example “4 bedrooms, not 5”, and the card updates."); break;
+    case "add-copy": { const text = ["Villa, El Paraíso Alto, Benahavís", "5 bedrooms, 4 bathrooms", "Built 420 m², plot 1,850 m²", "Asking price €2,950,000", "Pool: " + (state.add.answers[1] || ""), "Fees/IBI: " + (state.add.answers[2] || ""), "Photos: 5 (cover #3)"].join("\n");
+      (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject()).then(() => toast("Copied. Paste into the Resales listing form."), () => toast("Copy blocked by the browser here; works in the app.")); break; }
+    case "add-answer": state.add.answers.push(el.dataset.a); state.add.step = state.add.answers.length === 3 ? 5 : state.add.answers.length + 2;
       if (state.add.step === 5 && !state.listings.includes(NEW_PROP.ref)) {
         state.listings.unshift(NEW_PROP.ref);
         ["olga", "mark", "henrik"].forEach(k => { const b = C(k); if (!b.matches.includes(NEW_PROP.ref)) b.matches.push(NEW_PROP.ref); });
