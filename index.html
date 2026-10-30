@@ -427,6 +427,21 @@ main > * { animation: fadein .18s ease-out; }
   .site-scroll, .site-bar-r .muted { display: none; }
 }
 
+/* Today */
+.today { max-width: 640px; margin: 0 auto; padding: 48px 24px 40px; display: grid; gap: 18px; }
+.today-head h1 { font-size: 40px; margin: 6px 0 8px; letter-spacing: -0.02em; }
+.today-head .label { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.today-head p { margin: 0; font-size: 14px; }
+.brief-list.big { gap: 10px; }
+.brief-list.big li { background: var(--surface); border-radius: 14px; box-shadow: var(--shadow); padding: 14px 16px; }
+.brief-list.big .brief-txt { font-size: 16px; }
+.today-more { justify-self: start; font-size: 14px; }
+.today-coming { display: grid; gap: 4px; }
+.today-row { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 10px; align-items: center; text-align: left; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; font: inherit; font-size: 13.5px; cursor: pointer; }
+.detail-empty { height: 100%; display: grid; place-content: center; justify-items: center; gap: 10px; color: var(--muted); font-size: 14px; }
+.detail-empty svg { width: 28px; height: 28px; opacity: .4; }
+@media (max-width: 820px) { .today { padding: 24px 16px 32px; } .today-head h1 { font-size: 32px; } }
+
 /* Morning brief */
 .brief { margin: 12px 16px 4px; background: var(--surface); border-radius: 16px; box-shadow: var(--shadow); padding: 14px 16px; display: grid; gap: 10px; }
 .brief-head { display: flex; justify-content: space-between; align-items: center; }
@@ -599,6 +614,7 @@ const ICON = {
   lock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>',
   send: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>',
   copy: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>',
+  sun: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>',
   search: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>',
   clock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
   check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg>',
@@ -1103,6 +1119,7 @@ const $rail = document.getElementById("rail");
 function renderRail(route) {
   const n = hotGroups().needs.length;
   const items = [
+    ["today", "Today", ICON.sun],
     ["hotlist", "Hotlist", ICON.hot, n],
     ["funnel", "Funnel", ICON.funnel],
     ["listings", "Listings", ICON.home],
@@ -1151,30 +1168,36 @@ function briefLine(c) {
   if (f.newMatch) return { c, text: `Send ${n} the new match in ${PROPS[f.newMatch].area.split(",")[0]}`, go: `send-${c.id}-${f.newMatch}` };
   if (c.next && daysBetween(NOW, c.next.date) < 0) return { c, text: `${c.next.text} (overdue)`, act: "q-done" };
   if (c.next && daysBetween(NOW, c.next.date) === 0) return { c, text: c.next.text, act: "q-done" };
+  if (c.role === "seller" && quietDays(c) >= 14) return { c, text: `Update ${n} on ${c.listing && SITES[c.listing] ? SITES[c.listing].name : "the listing"}, quiet ${quietDays(c)} days`, act: "q-reply" };
   if (!c.next) return { c, text: `Set a next step for ${n}`, go: `client-${c.id}` };
   return null;
 }
-function briefHTML(g) {
+// ---------- Today: the start page. The same three lines as the 08:00 WhatsApp message, nothing else until you ask. ----------
+function renderToday() {
+  const g = hotGroups();
   const todo = g.needs.map(([c]) => briefLine(c)).filter(Boolean);
-  const later = g.coming.filter(([c]) => c.next && daysBetween(NOW, c.next.date) <= 1).map(([c]) => c);
-  const top = todo.slice(0, 3), rest = todo.length - top.length;
-  return `<section class="brief">
-    <div class="brief-head"><div class="label">${fmtDay(iso(NOW))} · Your three</div><span class="muted small">${todo.length ? `${todo.length} on you` : "Nothing on you"}</span></div>
-    ${top.length ? `<ol class="brief-list">${top.map(b => `<li>
-        <button class="brief-txt" data-go="client-${b.c.id}">${avatar(b.c, "sm")}<span>${esc(b.text)}</span></button>
-        ${b.act ? `<button class="btn small ${b.act === "q-reply" ? "wa" : "primary"}" data-act="${b.act}" data-id="${b.c.id}">${b.act === "q-reply" ? ICON.wa + " Reply" : ICON.check + " Done"}</button>` : `<a class="btn small primary" href="#${b.go}">Open</a>`}
-      </li>`).join("")}</ol>` : `<div class="brief-empty">All quiet. Enjoy the sun.</div>`}
-    ${rest > 0 || later.length ? `<div class="brief-foot">${rest > 0 ? `+${rest} more below` : ""}${rest > 0 && later.length ? " · " : ""}${later.length ? `Tomorrow: ${later.map(c => esc(firstName(c))).join(", ")}` : ""}</div>` : ""}
-    <div class="brief-wa">${ICON.wa} Sent to your WhatsApp every morning at 08:00</div>
-  </section>`;
+  const top = todo.slice(0, 3), rest = todo.slice(3);
+  const line = b => `<li>
+      <button class="brief-txt" data-go="client-${b.c.id}">${avatar(b.c, "sm")}<span>${esc(b.text)}</span></button>
+      ${b.act ? `<button class="btn small ${b.act === "q-reply" ? "wa" : "primary"}" data-act="${b.act}" data-id="${b.c.id}">${b.act === "q-reply" ? ICON.wa + " Reply" : ICON.check + " Done"}</button>` : `<a class="btn small primary" href="#${b.go}">Open</a>`}
+    </li>`;
+  $main.innerHTML = `<div class="today">
+    <div class="today-head"><div class="label">${fmtDay(iso(NOW))}</div>
+      <h1>${top.length ? "Your three." : "All quiet."}</h1>
+      <p class="muted">${g.needs.length} need you · ${g.coming.length} coming up · <a href="#hotlist">full hotlist</a></p></div>
+    ${top.length ? `<ol class="brief-list big">${top.map(line).join("")}</ol>` : `<div class="brief-empty">Nothing on you today. Enjoy the sun.</div>`}
+    ${rest.length ? `<button class="linkbtn today-more" data-act="today-more">${state.todayMore ? "Hide" : `Show the other ${rest.length}`}</button>
+      ${state.todayMore ? `<ol class="brief-list" start="4">${rest.map(line).join("")}</ol>` : ""}` : ""}
+    ${g.coming.length ? `<button class="linkbtn today-more" data-act="today-coming">${state.todayComing ? "Hide coming up" : `Coming up, ${g.coming.length}`}</button>
+      ${state.todayComing ? `<div class="today-coming">${g.coming.map(([c, r]) => `<button class="today-row" data-go="client-${c.id}">${avatar(c, "sm")}<span><b>${esc(c.name)}</b> · ${esc(r[0].text)}</span><span class="mono muted">${c.next ? fmtDay(c.next.date) : ""}</span></button>`).join("")}</div>` : ""}` : ""}
+    <div class="brief-wa">${ICON.wa} The same three lines reach your WhatsApp at 08:00</div>
+  </div>`;
 }
 
 function renderHotlist(selected) {
   const g = hotGroups();
   const list = `
-    ${waWarn() && !state.wa.dismissed ? `<div class="banner warn"><b>Open WhatsApp Business on your phone within ${14 - state.wa.appOpenedDaysAgo} days.</b> WhatsApp disconnects the CRM if the phone app isn’t opened for about 14 days. <button class="linkbtn" data-act="wa-ok">Got it</button></div>` : ""}
     <div class="page-head"><div><h1>Hotlist</h1><p>Who needs you, from your WhatsApp.</p></div><button class="btn small m-only" data-act="search">${ICON.search} Search</button></div>
-    ${briefHTML(g)}
     <p class="hint m-only">Swipe left on a row for Done, Snooze and Reply.</p>
     <div class="horizon"><label for="horizon">Show next steps within</label>
       <select id="horizon">${[3, 7, 14].map(n => `<option value="${n}" ${state.horizon === n ? "selected" : ""}>${n} days</option>`).join("")}</select></div>
@@ -1184,10 +1207,9 @@ function renderHotlist(selected) {
       ${g.coming.map(([c, r]) => rowHTML(c, r, selected)).join("") || '<div class="empty">Nothing in the next days.</div>'}</section>
     <section class="group"><div class="group-head"><span class="stripe" style="background:var(--green)"></span><h2>Already handled</h2><span class="n">${state.handled.length}</span></div>
       ${state.handled.map(h => `<div class="handled">${ICON.check}<div>${h.text}<div class="t">${esc(h.sub)} · ${fmtWhen(h.at)}</div></div></div>`).join("")}</section>`;
-  const first = selected || (g.needs[0] && g.needs[0][0].id);
   $main.innerHTML = `<div class="split ${selected ? "has-detail" : ""}">
     <div class="list-col">${list}</div>
-    <div class="detail-col">${first ? clientHTML(C(first)) : ""}</div></div>`;
+    <div class="detail-col">${selected ? clientHTML(C(selected)) : `<div class="detail-empty">${ICON.hot}<span>Pick someone on the left.</span></div>`}</div></div>`;
 }
 
 const SRC_ICON = { wa: ["wa", ICON.wa, "WhatsApp"], voice: ["wa", ICON.mic, "Voice note"], sheet: ["", ICON.eye, "Sheet"], cal: ["", ICON.cal, "Calendar"], mail: ["", ICON.mail, "Email"], sys: ["sys", ICON.sys, "System"] };
@@ -1721,7 +1743,7 @@ function renderLive() {
 
 // ---------- Router and events ----------
 function route() {
-  const h = (location.hash || "#hotlist").slice(1);
+  const h = (location.hash || "#today").slice(1);
   state.editing = state.editing && state.editingRoute === h ? state.editing : null;
   renderRail(h);
   if (h.startsWith("client-") && C(h.slice(7))) renderHotlist(h.slice(7));
@@ -1733,9 +1755,10 @@ function route() {
   else if (h.startsWith("pdf-")) { const [, cid, ref] = h.split("-"); renderPdf(cid, ref); }
   else if (h === "add") renderAdd();
   else if (h === "live") renderLive();
-  else renderHotlist(null);
+  else if (h === "hotlist") renderHotlist(null);
+  else renderToday();
 }
-function rerender() { state.editingRoute = (location.hash || "#hotlist").slice(1); route(); }
+function rerender() { state.editingRoute = (location.hash || "#today").slice(1); route(); }
 function edit(key) { state.editing = key; rerender(); }
 function go(h) { if (location.hash === "#" + h) route(); else location.hash = h; }
 
@@ -1829,6 +1852,8 @@ document.addEventListener("click", e => {
     case "wa": toast(`In the live version this opens the WhatsApp chat with ${c ? c.name : "the client"}.`); break;
     case "wa-sheet": toast(`In the live version this opens WhatsApp with ${AGENT.name}, and the tap is logged.`); break;
     case "lang": state.sheetLang = el.dataset.l; rerender(); break;
+    case "today-more": state.todayMore = !state.todayMore; rerender(); break;
+    case "today-coming": state.todayComing = !state.todayComing; rerender(); break;
     case "site-lang": state.siteLang = el.dataset.l; rerender(); window.scrollTo(0, 0); break;
     case "site-upload": toast("In the live app this opens a file picker. Plans appear on the site as a per-floor viewer."); break;
     case "add-send-msg": { const d = document.querySelector(".draft-text"); state.add.text = d ? d.textContent.trim() : ""; state.add.step = 1; rerender(); break; }
