@@ -406,6 +406,14 @@ main > * { animation: fadein .18s ease-out; }
 .site-contact .site-btn { background: #F4EFE6; color: var(--s-green); border-color: #F4EFE6; }
 .site-agent { font-size: 12.5px; letter-spacing: .08em; opacity: .8; }
 .site-foot { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding: 22px max(24px, 6vw); font-size: 11px; color: var(--s-muted); border-top: 1px solid #DDD3C2; }
+.owner { display: flex; align-items: center; gap: 10px; border-top: 1px solid var(--line); padding-top: 10px; font-size: 13px; }
+.owner-t { flex: 1; min-width: 0; display: grid; }
+.owner-t b { cursor: pointer; }
+.owner-t span { font-size: 12px; color: var(--muted); }
+.owner-t em { font-style: normal; color: var(--red); }
+.owner.late .owner-t span { color: var(--red); }
+.owner.none { color: var(--muted); }
+.owner.none svg { width: 16px; height: 16px; }
 .listing-acts { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 @media (max-width: 820px) {
   .site-story, .site-details, .site-area { grid-template-columns: 1fr; gap: 24px; }
@@ -953,7 +961,7 @@ function seedClients() {
         { at: "2026-10-27T19:10", src: "wa", what: "Offer made · R4588120 · €2,150,000", q: "Sophie: “Let’s go in at 2.15 and see.”" },
         { at: "2026-10-25T12:00", src: "cal", what: "Second viewing done · R4588120", q: "Calendar: Las Brisas with Sophie + architect" },
       ] },
-    { id: "carlos", name: "Carlos Ruiz", flag: "🇪🇸", lang: "Spanish", role: "seller", stage: "new_lead", budget: "Asking ~€2.95M",
+    { id: "carlos", name: "Carlos Ruiz", flag: "🇪🇸", lang: "Spanish", role: "seller", stage: "new_lead", budget: "Asking ~€2.95M", listing: "R4644210",
       next: { text: "Sign exclusive mandate, El Paraíso Alto", date: "2026-11-02", owner: "agent", ev: "“Vale, firmamos la exclusiva el lunes.”" },
       profile: ["Seller", "Villa, El Paraíso Alto", "5 bedrooms", "Wants exclusive", "Valuation €2.85–3.0M"],
       matches: [], flags: {},
@@ -988,6 +996,13 @@ function seedClients() {
       next: { text: "Check in about spring plans", date: "2027-02-01", owner: "agent", ev: "“Lass uns im Februar wieder sprechen.”" },
       profile: ["4 bedrooms", "Golf", "Up to €2.0M"], matches: [], flags: {},
       tl: [{ at: "2026-08-25T11:00", src: "wa", what: "Client paused search", q: "“Lass uns im Februar wieder sprechen.”" }] },
+    { id: "whitfield", name: "Peter & Jane Whitfield", flag: "🇬🇧", lang: "English", role: "seller", stage: "searching", budget: "Asking €2,450,000", listing: "R4512345",
+      next: { text: "Send the Whitfields the weekly update", date: "2026-10-31", owner: "agent", ev: "Weekly rhythm agreed at signing" },
+      profile: ["Sellers", "Casa Aloha, Nueva Andalucía", "Exclusive until June", "Prefer email summaries, WhatsApp for urgent"],
+      matches: [], flags: {},
+      tl: [{ at: "2026-10-25T09:20", src: "wa", what: "Owner asked about Saturday’s viewing", q: "“How did the Swedish couple like it?”" },
+           { at: "2026-10-24T13:05", src: "wa", what: "Weekly update sent", q: "Jonathan: “3 sheet opens, viewing tomorrow with a Swedish family.”" },
+           { at: "2026-09-02T10:00", src: "wa", what: "Exclusive mandate signed", q: "“Let’s do it. Keep us posted weekly.”" }] },
     { id: "marta", name: "Marta Jiménez", flag: "🇪🇸", lang: "Spanish", role: "seller", stage: "searching", budget: "Asking €1,195,000", listing: "R4601877",
       next: null,
       profile: ["Seller", "Townhouse, San Pedro beach side", "Exclusive until March", "Wants weekly updates"],
@@ -1267,9 +1282,9 @@ function moveForm(c) {
 
 function renderFunnel() {
   $main.innerHTML = `<div class="page">
-    <div class="page-head"><div><h1>Funnel</h1><p>Every client in one stage. Drag to move. Red dot means also on the hotlist.</p></div></div>
+    <div class="page-head"><div><h1>Funnel</h1><p>Buyers and co-broke agents, one stage each. Drag to move. Red dot means also on the hotlist. Sellers live on their listings.</p></div></div>
     <div class="board">${STAGES.map(([k, l]) => {
-      const cs = state.clients.filter(c => c.stage === k);
+      const cs = state.clients.filter(c => c.stage === k && c.role !== "seller");
       return `<section class="col" data-stage="${k}" aria-label="${l}">
         <div class="col-head"><h2>${l}</h2><span class="muted mono">${cs.length}</span></div>
         ${cs.map(c => `<div class="card" draggable="true" data-id="${c.id}" role="button" tabindex="0" data-go="client-${c.id}">
@@ -1280,20 +1295,31 @@ function renderFunnel() {
     }).join("")}</div></div>`;
 }
 
+const ownerOf = p => state.clients.find(c => c.role === "seller" && c.listing === p.ref);
+const viewingsOf = p => state.clients.reduce((n, c) => n + c.tl.filter(e => e.what.startsWith("Viewing done · " + p.ref)).length, 0);
+function ownerHTML(p) {
+  const o = ownerOf(p);
+  if (!o) return `<div class="owner none">${ICON.plu} <span>No owner on file. Add them from the chat.</span></div>`;
+  const q = quietDays(o), red = q >= 14, rs = reasons(o);
+  return `<div class="owner ${red ? "late" : ""}">${avatar(o, "sm")}
+    <div class="owner-t"><b data-go="client-${o.id}" role="link" tabindex="0">${esc(o.name)} ${o.flag}</b><span>Owner · last contact ${q === 0 ? "today" : q === 1 ? "yesterday" : q + " days ago"}${rs.some(r => r.level === "red") ? " · <em>on the hotlist</em>" : ""}</span></div>
+    <button class="btn small ${red ? "primary" : ""}" data-act="q-reply" data-id="${o.id}">${ICON.wa} Owner update</button></div>`;
+}
 function matchingBuyers(p) {
   return state.clients.filter(c => c.role === "buyer" && c.matches.includes(p.ref));
 }
 function renderListings() {
   const ps = state.listings.map(r => PROPS[r] || NEW_PROP);
   $main.innerHTML = `<div class="page">
-    <div class="page-head"><div><h1>Listings</h1><p>Your own mandates. Everything else stays in Resales.</p></div><a class="btn primary" href="#add">${ICON.plus} Add property</a></div>
+    <div class="page-head"><div><h1>Listings</h1><p>Your own mandates, each with its owner. Everything else stays in Resales.</p></div><a class="btn primary" href="#add">${ICON.plus} Add property</a></div>
     <div class="listing-grid">${ps.map(p => {
       const buyers = matchingBuyers(p);
       return `<article class="listing">${photo(p.seed, p.ref)}
         <div class="body"><div class="price">${money(p.price)}</div>
           <div><b>${esc(p.title)}</b><div class="muted">${p.beds} bed · ${p.baths} bath · ${p.built} m² built${p.plot ? ` · ${p.plot.toLocaleString("en-GB")} m² plot` : ""}</div></div>
-          <div class="stats"><div class="stat"><b>${p.opens}</b><span>sheet opens, 7 days</span></div><div class="stat"><b>${p.clicks}</b><span>WhatsApp taps</span></div><div class="stat"><b>${buyers.length}</b><span>matching buyers</span></div></div>
+          <div class="stats"><div class="stat"><b>${p.opens}</b><span>sheet opens, 7 days</span></div><div class="stat"><b>${viewingsOf(p)}</b><span>viewings done</span></div><div class="stat"><b>${buyers.length}</b><span>matching buyers</span></div></div>
           <div class="muted" style="font-size:12px">${buyers.map(b => esc(b.name)).join(", ") || "No matching buyers yet"}</div>
+          ${ownerHTML(p)}
           <div class="listing-acts"><a class="btn small" href="#sheet-${p.ref}">${ICON.eye} Sheet</a>${SITES[p.ref] ? `<a class="btn small primary" href="#site-${p.ref}">${ICON.globe} Mini-site</a><span class="muted mono small">${SITES[p.ref].domain}</span>` : ""}</div></div></article>`;
     }).join("")}</div></div>`;
 }
