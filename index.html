@@ -313,6 +313,72 @@ main > * { animation: fadein .18s ease-out; }
 @keyframes fadein { from { opacity: .6; transform: translateY(4px); } }
 @media (prefers-reduced-motion: reduce) { main > * { animation: none; } .card:hover { transform: none; } }
 
+/* Quick actions, overlays, PDF */
+.row { position: relative; cursor: pointer; }
+.row-acts { grid-column: 1 / -1; display: none; gap: 6px; flex-wrap: wrap; align-items: center; padding: 8px 0 2px 40px; }
+.row-acts .btn svg { width: 14px; height: 14px; }
+@media (hover: hover) { .row:hover .row-acts, .row:focus-within .row-acts { display: flex; } }
+.row-acts.open, .row.swiped .row-acts { display: flex; }
+.hint { font-size: 12px; color: var(--muted); padding: 0 20px; margin: -2px 0 8px; }
+.m-only { display: none; }
+.search-btn { display: flex; align-items: center; gap: 8px; margin: 0 2px 10px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); color: var(--muted); font-size: 13px; text-align: left; }
+.search-btn svg { width: 15px; height: 15px; }
+.search-btn kbd { margin-left: auto; font-family: var(--mono); font-size: 10.5px; border: 1px solid var(--line); border-radius: 5px; padding: 1px 5px; }
+.wa-status { display: flex; align-items: center; gap: 6px; font-size: 11.5px; color: var(--green); }
+.wa-status .dot { background: var(--green); }
+.wa-status.warn { color: var(--amber); }
+.wa-status.warn .dot { background: var(--amber); }
+.banner { margin: 14px 16px 0; padding: 10px 12px; border-radius: 12px; font-size: 12.5px; line-height: 1.45; }
+.banner.warn { background: var(--amber-soft); color: var(--ink); }
+.banner.warn b { color: var(--amber); }
+.banner.info { margin: 0 0 16px; background: var(--accent-soft); color: var(--ink); }
+.note-muted { font-size: 11.5px; color: var(--muted); border-top: 1px dashed var(--line); padding-top: 10px; }
+.small { font-size: 12px; }
+.q-nav-r { display: flex; gap: 8px; }
+.send-opts { display: grid; gap: 8px; }
+.opt:disabled { opacity: .45; cursor: not-allowed; }
+.opt.small { padding: 5px 10px; font-size: 12.5px; }
+.doc-bubble { display: flex; gap: 10px; align-items: center; background: var(--surface); border-radius: 8px; padding: 8px 10px; }
+.doc-ic { width: 34px; height: 40px; border-radius: 4px; background: #E5484D; color: #fff; font-size: 10px; font-weight: 700; display: grid; place-items: center; }
+.modal-bg { position: fixed; inset: 0; background: rgba(10, 20, 16, .38); z-index: 40; }
+.modal { position: fixed; z-index: 41; left: 50%; top: 12vh; transform: translateX(-50%); width: min(560px, calc(100% - 32px)); background: var(--surface); border-radius: 18px; box-shadow: 0 24px 60px -20px rgba(0,0,0,.4); padding: 18px; display: grid; gap: 12px; }
+.modal textarea { font: inherit; width: 100%; border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; background: var(--bg); color: var(--ink); resize: vertical; }
+.modal-actions { display: flex; justify-content: flex-end; gap: 8px; flex-wrap: wrap; }
+.modal.search { top: 10vh; padding: 0; gap: 0; overflow: hidden; }
+.modal.search input { font: inherit; font-size: 16px; border: 0; border-bottom: 1px solid var(--line); padding: 16px 18px; background: transparent; color: var(--ink); outline: none; }
+.s-list { max-height: 50vh; overflow: auto; padding: 6px; }
+.s-row { display: flex; gap: 10px; align-items: center; width: 100%; border: 0; background: none; text-align: left; padding: 8px 10px; border-radius: 10px; }
+.s-row[aria-selected="true"], .s-row:hover { background: var(--accent-soft); }
+.s-row .ph.s-ph { width: 40px; height: 30px; border-radius: 6px; flex: none; }
+.s-foot { font-size: 11.5px; padding: 8px 14px; border-top: 1px solid var(--line); }
+.a4-wrap { overflow-x: auto; padding-bottom: 20px; }
+.a4 { width: 794px; min-height: 1123px; margin: 0 auto; background: #fff; color: #1A1A1A; box-shadow: var(--shadow); padding: 44px 48px; display: grid; gap: 16px; align-content: start; font-family: var(--body); }
+.a4-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; }
+.a4-price { font-family: var(--display); font-size: 34px; font-weight: 700; }
+.a4-area { color: #555; }
+.a4-for { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: #777; font-weight: 600; }
+.a4-cover { height: 330px; border-radius: 10px; }
+.a4-facts { margin: 0; }
+.a4-cols { display: grid; grid-template-columns: 1.4fr 1fr; gap: 24px; font-size: 13px; line-height: 1.6; }
+.a4-cols p { margin: 0 0 10px; }
+.ms-facts.one { grid-template-columns: 1fr; }
+.a4-cols .ms-map { margin-top: 12px; border-radius: 8px; overflow: hidden; }
+.a4-photos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.a4-photos .ph { height: 140px; border-radius: 8px; }
+.a4-foot { display: grid; grid-template-columns: 44px 1fr auto; gap: 12px; align-items: center; border-top: 1px solid #E6E6E6; padding-top: 14px; font-size: 13px; }
+.a4-foot .avatar { width: 44px; height: 44px; background: #E5EFEB; color: #0F6B57; }
+.a4-small { font-size: 10.5px; color: #888; text-align: right; max-width: 260px; }
+@media print {
+  @page { size: A4; margin: 0; }
+  html, body { height: auto; background: #fff; }
+  .rail, .pdf-bar, .toast, #modal-root { display: none !important; }
+  .app { display: block; height: auto; }
+  main { overflow: visible; }
+  .page { padding: 0 !important; }
+  main > * { animation: none; }
+  .a4 { box-shadow: none; width: 210mm; min-height: 297mm; margin: 0; }
+}
+
 @media (max-width: 820px) {
   .app { grid-template-columns: 1fr; grid-template-rows: 1fr auto; }
   .rail { order: 2; flex-direction: row; justify-content: space-around; border-right: 0; border-top: 1px solid var(--line); background: color-mix(in srgb, var(--surface) 82%, transparent); backdrop-filter: saturate(1.6) blur(18px); -webkit-backdrop-filter: saturate(1.6) blur(18px); padding-block: 6px calc(6px + env(safe-area-inset-bottom, 0px)); padding-left: max(8px, env(safe-area-inset-left, 0px)); padding-right: max(8px, env(safe-area-inset-right, 0px)); gap: 0; }
@@ -328,6 +394,11 @@ main > * { animation: fadein .18s ease-out; }
   .list-col { border-right: 0; }
   .back { display: inline-flex; }
   .cols, .sheet-wrap, .chat-layout, .compose { grid-template-columns: 1fr; }
+  .m-only { display: inline-flex; }
+  p.m-only { display: block; }
+  .search-btn { display: none; }
+  .modal { top: auto; bottom: 0; transform: translateX(-50%); border-radius: 18px 18px 0 0; padding-bottom: calc(18px + env(safe-area-inset-bottom, 0px)); }
+  .modal.search { top: 8vh; bottom: auto; border-radius: 18px; }
   .preview-col { position: static; }
   .cover-opts { grid-template-columns: repeat(2, 1fr); }
   .board { grid-auto-columns: 86%; scroll-snap-type: x mandatory; }
@@ -345,6 +416,7 @@ main > * { animation: fadein .18s ease-out; }
   <nav class="rail" id="rail" aria-label="Main"></nav>
   <main id="main"></main>
 </div>
+<div id="modal-root"></div>
 <div class="toast" id="toast" role="status" hidden></div>
 
 <script>
@@ -392,6 +464,8 @@ const ICON = {
   cal: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>',
   mail: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>',
   sys: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/></svg>',
+  search: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>',
+  clock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
   check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg>',
   back: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 5l-7 7 7 7"/></svg>',
 };
@@ -558,33 +632,61 @@ const T = {
         hl: l => `Highlights include ${l}.`, extras: l => `Also included: ${l}.`, hist: (y, r) => `Built in ${y}${r ? ` and renovated in ${r}` : ""}.`,
         facts: ["Year built", "Orientation", "Parking spaces", "Energy rating", "Property tax (IBI)", "Community fees"], yr: "/ yr", mo: "/ mo", none: "None",
         ask: n => `Ask ${n} on WhatsApp`, ref: "MLS ref", noteFrom: n => `A note from ${n}`, forWho: x => `Prepared for ${x}`,
-        note: f => `Hi ${f}, this is the one I mentioned. Happy to show you around whenever it suits you.`, msg: (f, l) => `Hi ${f}, here’s the sheet: ${l}` },
+        note: f => `Hi ${f}, this is the one I mentioned. Happy to show you around whenever it suits you.`, pdfMsg: f => `Hi ${f}, here are the details as a PDF.`, disc: "Information is indicative and does not form part of any contract.", msg: (f, l) => `Hi ${f}, here’s the sheet: ${l}` },
   es: { and: "y", beds: "Dorm.", baths: "Baños", built: "m² const.", plot: "m² parcela",
         layout: (bu, b, ba, pl) => `${bu} m² construidos con ${b} dormitorios y ${ba} baños${pl ? `, en una parcela de ${pl} m²` : ""}.`,
         hl: l => `Destaca por: ${l}.`, extras: l => `Incluye además: ${l}.`, hist: (y, r) => `Construcción de ${y}${r ? `, reforma integral en ${r}` : ""}.`,
         facts: ["Año", "Orientación", "Plazas de garaje", "Certificado energético", "IBI", "Comunidad"], yr: "/ año", mo: "/ mes", none: "Sin comunidad",
         ask: n => `Pregunta a ${n} por WhatsApp`, ref: "Ref. MLS", noteFrom: n => `Nota de ${n}`, forWho: x => `Preparado para ${x}`,
-        note: f => `Hola ${f}, esta es la que te comenté. Encantado de enseñártela cuando quieras.`, msg: (f, l) => `Hola ${f}, aquí tienes la ficha: ${l}` },
+        note: f => `Hola ${f}, esta es la que te comenté. Encantado de enseñártela cuando quieras.`, pdfMsg: f => `Hola ${f}, aquí tienes la ficha en PDF.`, disc: "Información orientativa, sin valor contractual.", msg: (f, l) => `Hola ${f}, aquí tienes la ficha: ${l}` },
   sv: { and: "och", beds: "Sovrum", baths: "Badrum", built: "m² boyta", plot: "m² tomt",
         layout: (bu, b, ba, pl) => `${bu} m² boyta med ${b} sovrum och ${ba} badrum${pl ? `, på en tomt om ${pl} m²` : ""}.`,
         hl: l => `Det som sticker ut: ${l}.`, extras: l => `Dessutom: ${l}.`, hist: (y, r) => `Byggd ${y}${r ? `, renoverad ${r}` : ""}.`,
         facts: ["Byggår", "Väderstreck", "Parkeringsplatser", "Energiklass", "Fastighetsskatt (IBI)", "Föreningsavgift"], yr: "/ år", mo: "/ mån", none: "Ingen",
         ask: n => `Fråga ${n} på WhatsApp`, ref: "MLS-ref", noteFrom: n => `Hälsning från ${n}`, forWho: x => `Till ${x}`,
-        note: f => `Hej ${f}! Det här är den jag nämnde. Visar den gärna när det passar er.`, msg: (f, l) => `Hej ${f}, här är bladet: ${l}` },
+        note: f => `Hej ${f}! Det här är den jag nämnde. Visar den gärna när det passar er.`, pdfMsg: f => `Hej ${f}, här är detaljerna som PDF.`, disc: "Uppgifterna är vägledande och utgör inte del av något avtal.", msg: (f, l) => `Hej ${f}, här är bladet: ${l}` },
   nl: { and: "en", beds: "Slaapk.", baths: "Badk.", built: "m² woon", plot: "m² perceel",
         layout: (bu, b, ba, pl) => `${bu} m² woonoppervlak met ${b} slaapkamers en ${ba} badkamers${pl ? `, op een perceel van ${pl} m²` : ""}.`,
         hl: l => `Wat opvalt: ${l}.`, extras: l => `Verder: ${l}.`, hist: (y, r) => `Gebouwd in ${y}${r ? `, gerenoveerd in ${r}` : ""}.`,
         facts: ["Bouwjaar", "Oriëntatie", "Parkeerplaatsen", "Energielabel", "Onroerendgoedbelasting (IBI)", "Servicekosten"], yr: "/ jaar", mo: "/ mnd", none: "Geen",
         ask: n => `Vraag ${n} via WhatsApp`, ref: "MLS-ref", noteFrom: n => `Bericht van ${n}`, forWho: x => `Voor ${x}`,
-        note: f => `Hoi ${f}, dit is de woning die ik noemde. Ik laat hem je graag zien wanneer het uitkomt.`, msg: (f, l) => `Hoi ${f}, hier is de woning: ${l}` },
+        note: f => `Hoi ${f}, dit is de woning die ik noemde. Ik laat hem je graag zien wanneer het uitkomt.`, pdfMsg: f => `Hoi ${f}, hier zijn de details als pdf.`, disc: "Informatie is indicatief en maakt geen deel uit van een contract.", msg: (f, l) => `Hoi ${f}, hier is de woning: ${l}` },
   de: { and: "und", beds: "Zimmer", baths: "Bäder", built: "m² Wohnfl.", plot: "m² Grundst.",
         layout: (bu, b, ba, pl) => `${bu} m² Wohnfläche mit ${b} Schlafzimmern und ${ba} Bädern${pl ? `, auf einem Grundstück von ${pl} m²` : ""}.`,
         hl: l => `Besonders: ${l}.`, extras: l => `Außerdem: ${l}.`, hist: (y, r) => `Baujahr ${y}${r ? `, renoviert ${r}` : ""}.`,
         facts: ["Baujahr", "Ausrichtung", "Stellplätze", "Energieklasse", "Grundsteuer (IBI)", "Gemeinschaftskosten"], yr: "/ Jahr", mo: "/ Monat", none: "Keine",
         ask: n => `${n} per WhatsApp fragen`, ref: "MLS-Ref.", noteFrom: n => `Notiz von ${n}`, forWho: x => `Für ${x}`,
-        note: f => `Hallo ${f}, das ist die Immobilie, von der ich erzählt habe. Ich zeige sie Ihnen gern, wann es passt.`, msg: (f, l) => `Hallo ${f}, hier ist das Exposé: ${l}` },
+        note: f => `Hallo ${f}, das ist die Immobilie, von der ich erzählt habe. Ich zeige sie Ihnen gern, wann es passt.`, pdfMsg: f => `Hallo ${f}, hier das Exposé als PDF.`, disc: "Angaben ohne Gewähr, nicht Vertragsbestandteil.", msg: (f, l) => `Hallo ${f}, hier ist das Exposé: ${l}` },
 };
 const LOCALE = { en: "en-GB", es: "es-ES", sv: "sv-SE", nl: "nl-NL", de: "de-DE" };
+// Reply drafts the agent sends from their own WhatsApp. [Brackets] are for the agent to fill in.
+const DRAFTS = {
+  en: { answer: f => `Hi ${f}! Good question. [Your answer here]. Shall I set up viewings while you’re here?`,
+        nudge: f => `Hi ${f}, did you get a chance to look at the properties I sent? Happy to set up viewings for the ones you like.`,
+        match: (f, a) => `Hi ${f}, a villa just came on the market that fits what you’re looking for (${a}). Want me to send you the details?`,
+        feedback: f => `Hi ${f}, thanks again for Saturday! What did you think of the villa? If it’s not quite right, tell me what to adjust and I’ll look for alternatives.`,
+        checkin: f => `Hi ${f}, just checking in. Is your search still on, and has anything changed in what you’re looking for?` },
+  sv: { answer: f => `Hej ${f}! Bra fråga. [Ditt svar här]. Ska jag boka visningar när ni är här?`,
+        nudge: f => `Hej ${f}! Hann ni titta på objekten jag skickade? Jag bokar gärna visningar på dem ni gillar.`,
+        match: (f, a) => `Hej ${f}! Det har precis kommit ut en villa som matchar det ni letar efter (${a}). Vill ni att jag skickar detaljerna?`,
+        feedback: f => `Hej ${f}! Tack igen för lördagen. Vad tyckte ni om villan? Om den inte riktigt passar, säg vad jag ska justera så letar jag alternativ.`,
+        checkin: f => `Hej ${f}! Ville bara höra av mig. Letar ni fortfarande, och har något ändrats i vad ni söker?` },
+  es: { answer: f => `¡Hola ${f}! Buena pregunta. [Tu respuesta aquí]. ¿Organizo visitas para cuando estéis aquí?`,
+        nudge: f => `Hola ${f}, ¿has podido ver las propiedades que te envié? Encantado de organizar visitas a las que te gusten.`,
+        match: (f, a) => `Hola ${f}, acaba de salir una villa que encaja con lo que buscas (${a}). ¿Te envío los detalles?`,
+        feedback: f => `Hola ${f}, gracias de nuevo por el sábado. ¿Qué te pareció la villa? Si no encaja del todo, dime qué ajustar y busco alternativas.`,
+        checkin: f => `Hola ${f}, solo quería saber cómo va todo. ¿Sigues buscando? ¿Ha cambiado algo en lo que buscas?` },
+  nl: { answer: f => `Hoi ${f}! Goede vraag. [Jouw antwoord hier]. Zal ik bezichtigingen plannen als jullie hier zijn?`,
+        nudge: f => `Hoi ${f}, heb je de woningen die ik stuurde al kunnen bekijken? Ik plan graag bezichtigingen voor de woningen die je aanspreken.`,
+        match: (f, a) => `Hoi ${f}, er is net een villa op de markt gekomen die past bij wat je zoekt (${a}). Zal ik de details sturen?`,
+        feedback: f => `Hoi ${f}, nogmaals bedankt voor zaterdag. Wat vond je van de villa? Als hij niet helemaal past, laat me weten wat ik moet aanpassen, dan zoek ik alternatieven.`,
+        checkin: f => `Hoi ${f}, even checken hoe het gaat. Zoek je nog steeds, en is er iets veranderd in wat je zoekt?` },
+  de: { answer: f => `Hallo ${f}! Gute Frage. [Ihre Antwort hier]. Soll ich Besichtigungen planen, wenn Sie hier sind?`,
+        nudge: f => `Hallo ${f}, hatten Sie schon Gelegenheit, sich die Immobilien anzusehen? Gern organisiere ich Besichtigungen für die, die Ihnen gefallen.`,
+        match: (f, a) => `Hallo ${f}, gerade ist eine Villa auf den Markt gekommen, die zu Ihrer Suche passt (${a}). Soll ich Ihnen die Details schicken?`,
+        feedback: f => `Hallo ${f}, nochmals danke für Samstag. Wie hat Ihnen die Villa gefallen? Wenn sie nicht ganz passt, sagen Sie mir, was ich anpassen soll, und ich suche Alternativen.`,
+        checkin: f => `Hallo ${f}, ich wollte mich kurz melden. Suchen Sie noch, und hat sich etwas an Ihren Wünschen geändert?` },
+};
 const fmtNum = (n, lang = "en") => n.toLocaleString(LOCALE[lang]);
 function listJoin(items, lang) {
   // German keeps capitals on nouns; adjectives mid-sentence go lower case.
@@ -625,9 +727,9 @@ function sheetHTML(p, o) {
       <dl class="ms-facts">${keyFacts(p, o.lang).map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(String(v))}</dd></div>`).join("")}</dl>
       <div class="grid-ph">${rest.concat(p.seed + 8).map(sd => photo(sd)).join("")}</div>
       <div class="ms-map">${mapSVG(p.area)}</div>
-      <div class="agent-card"><div class="avatar">J</div><div><b>${AGENT.name}</b><div style="color:#666;font-size:12.5px">${AGENT.agency}</div><div class="mono" style="font-size:12.5px;color:#333">${AGENT.phone}</div></div>
+      <div class="agent-card"><div class="avatar">J</div><div><b>${AGENT.name}</b>${o.anon ? "" : `<div style="color:#666;font-size:12.5px">${AGENT.agency}</div>`}<div class="mono" style="font-size:12.5px;color:#333">${AGENT.phone}</div></div>
         <button class="wa-btn" data-act="wa-sheet" data-ref="${p.ref}">${ICON.wa} ${esc(t.ask(AGENT.name))}</button></div>
-      <div class="ref">${t.ref} ${p.ref}</div>
+      ${o.anon ? "" : `<div class="ref">${t.ref} ${p.ref}</div>`}
     </div>`;
 }
 
@@ -709,13 +811,14 @@ function seedHandled() {
   ];
 }
 
-let state = { clients: seedClients(), handled: seedHandled(), horizon: 7, listings: ["R4512345", "R4601877"], sim: 0, sentLog: [], add: { step: 0, answers: [] }, sheetLang: "en", editing: null };
+let state = { clients: seedClients(), handled: seedHandled(), horizon: 7, listings: ["R4512345", "R4601877"], sim: 0, sentLog: [], add: { step: 0, answers: [] }, sheetLang: "en", editing: null, modal: null, snoozeOpen: null, wa: { appOpenedDaysAgo: 11, dismissed: false } };
 const C = id => state.clients.find(c => c.id === id);
 
 // ---------- Hotlist rules ----------
 const ACTIVE = new Set(["new_lead", "searching", "viewing", "offer", "reservation", "arras"]);
 function reasons(c) {
   const r = [];
+  if (c.snooze && daysBetween(NOW, c.snooze) > 0) return r;
   const f = c.flags;
   if (f.unanswered) {
     const h = Math.round((NOW - d(f.unanswered.at)) / 36e5);
@@ -744,6 +847,9 @@ function hotGroups() {
 }
 const onHot = c => reasons(c).length > 0;
 
+// WhatsApp Coexistence disconnects if the Business app isn't opened for about 14 days.
+const waWarn = () => state.wa.appOpenedDaysAgo >= 10;
+
 // ---------- Rendering ----------
 const $main = document.getElementById("main");
 const $rail = document.getElementById("rail");
@@ -757,33 +863,46 @@ function renderRail(route) {
     ["add", "Add property", ICON.plus],
     ["live", "Live demo", ICON.play],
   ];
-  const cur = route.startsWith("client") || route.startsWith("send") ? "hotlist" : route.startsWith("sheet") ? "listings" : route;
+  const cur = route.startsWith("client") || route.startsWith("send") || route.startsWith("pdf") ? "hotlist" : route.startsWith("sheet") ? "listings" : route;
   $rail.innerHTML = `
     <div class="brand"><b>Marbella CRM</b><span class="demo-tag">Demo</span></div>
+    <button class="search-btn" data-act="search">${ICON.search}<span>Search</span><kbd>⌘K</kbd></button>
     ${items.map(([k, label, ic, count]) => `
       <a class="nav" href="#${k}" ${cur === k ? 'aria-current="page"' : ""}>${ic}<span>${label}</span>
         ${count ? `<span class="count">${count}</span><span class="dot mdot"></span>` : ""}</a>`).join("")}
     <div class="rail-foot">
       <div class="agent-mini"><div class="avatar">J</div><div><b>${AGENT.name}</b><div class="muted">${AGENT.agency}</div></div></div>
+      <div class="wa-status ${waWarn() ? "warn" : ""}"><span class="dot"></span>${waWarn() ? `Phone app last opened ${state.wa.appOpenedDaysAgo} days ago` : "WhatsApp connected · synced 2 min ago"}</div>
       <div class="muted">Demo data · Wed 28 Oct 2026</div>
       <button class="linkbtn" data-act="reset">Reset demo</button>
     </div>`;
 }
 
 function rowHTML(c, r, selected) {
-  const top = r[0];
-  return `<button class="row" data-go="client-${c.id}" aria-current="${selected === c.id}">
+  const top = r[0], snoozing = state.snoozeOpen === c.id;
+  return `<div class="row" role="button" tabindex="0" data-go="client-${c.id}" data-swipe="${c.id}" aria-current="${selected === c.id}">
     <div class="name">${avatar(c)}<span>${esc(c.name)}</span><span>${c.flag}</span></div>
     <div class="mono muted" style="font-size:12px">${c.next ? fmtDay(c.next.date) : "–"}</div>
     <div class="why">${esc(top.text)}</div>
     <div class="meta"><span class="pill">${stageName(c.stage)}</span>${r.length > 1 ? `<span>+${r.length - 1} more</span>` : ""}${top.detail ? `<span>${esc(top.detail)}</span>` : ""}</div>
-  </button>`;
+    <div class="row-acts ${snoozing ? "open" : ""}">${snoozing
+      ? `<span class="muted" style="font-size:12px">Snooze until</span>
+         <button class="btn small" data-act="q-snooze-to" data-id="${c.id}" data-days="1">Tomorrow</button>
+         <button class="btn small" data-act="q-snooze-to" data-id="${c.id}" data-days="5">Monday</button>
+         <button class="btn small" data-act="q-snooze-to" data-id="${c.id}" data-days="7">Next week</button>
+         <button class="btn small" data-act="q-snooze-cancel">Cancel</button>`
+      : `<button class="btn small primary" data-act="q-done" data-id="${c.id}">${ICON.check} Done</button>
+         <button class="btn small" data-act="q-snooze" data-id="${c.id}">${ICON.clock} Snooze</button>
+         <button class="btn small wa" data-act="q-reply" data-id="${c.id}">${ICON.wa} Reply</button>`}</div>
+  </div>`;
 }
 
 function renderHotlist(selected) {
   const g = hotGroups();
   const list = `
-    <div class="page-head"><div><h1>Hotlist</h1><p>Who needs you, from your WhatsApp.</p></div></div>
+    ${waWarn() && !state.wa.dismissed ? `<div class="banner warn"><b>Open WhatsApp Business on your phone within ${14 - state.wa.appOpenedDaysAgo} days.</b> WhatsApp disconnects the CRM if the phone app isn’t opened for about 14 days. <button class="linkbtn" data-act="wa-ok">Got it</button></div>` : ""}
+    <div class="page-head"><div><h1>Hotlist</h1><p>Who needs you, from your WhatsApp.</p></div><button class="btn small m-only" data-act="search">${ICON.search} Search</button></div>
+    <p class="hint m-only">Swipe left on a row for Done, Snooze and Reply.</p>
     <div class="horizon"><label for="horizon">Show next steps within</label>
       <select id="horizon">${[3, 7, 14].map(n => `<option value="${n}" ${state.horizon === n ? "selected" : ""}>${n} days</option>`).join("")}</select></div>
     <section class="group"><div class="group-head"><span class="stripe" style="background:var(--red)"></span><h2>Needs you</h2><span class="n">${g.needs.length}</span></div>
@@ -842,6 +961,7 @@ function clientHTML(c) {
       <section class="panel">
         <div class="panel-head"><h3>Timeline</h3><span class="muted" style="font-size:12px">Built from WhatsApp, email, calendar</span></div>
         <div class="timeline">${c.tl.map((t, i) => tlHTML(c, t, i)).join("")}</div>
+        <div class="note-muted">WhatsApp group chats aren’t synced, so messages in groups won’t show here.</div>
       </section>
     </div>
   </div>`;
@@ -852,7 +972,7 @@ function matchHTML(c, p) {
   return `<div class="match">${photo(p.seed)}
     <div style="min-width:0"><div class="t">${esc(p.title)}</div>
       <div class="s"><span class="mono">${money(p.price)}</span> · ${p.beds} bed · <span class="mono">${p.ref}</span>
-      ${p.own ? '<span class="pill accent">Your listing</span>' : '<span class="pill">Resales</span>'} ${p.isNew ? '<span class="pill red">New</span>' : ""}</div></div>
+      ${p.own ? '<span class="pill accent">Your listing</span>' : '<span class="pill" title="Another agency’s listing on Resales">Network</span>'} ${p.isNew ? '<span class="pill red">New</span>' : ""}</div></div>
     ${sent ? '<span class="pill green">Sent</span>' : `<button class="btn small" data-act="send" data-id="${c.id}" data-ref="${p.ref}">Send sheet</button>`}
   </div>`;
 }
@@ -962,10 +1082,10 @@ function startCompose(c, p) {
   const lang = langFor(c);
   const wanted = p.features.filter(k => c.profile.some(x => FEATURES[k].match.test(x)));
   const hl = wanted.concat(p.features.filter(k => !wanted.includes(k))).slice(0, 3);
-  return { cid: c.id, ref: p.ref, step: 0, lang, hl, cover: 0, note: T[lang].note(firstName(c)), noteEdited: false, noteOn: true };
+  return { cid: c.id, ref: p.ref, step: 0, lang, hl, cover: 0, note: T[lang].note(firstName(c)), noteEdited: false, noteOn: true, format: "link", anon: false };
 }
 function composeOpts(c, k) {
-  return { lang: k.lang, hl: k.hl, cover: k.cover, note: k.noteOn ? k.note : "", forWho: firstName(c) };
+  return { lang: k.lang, hl: k.hl, cover: k.cover, note: k.noteOn ? k.note : "", forWho: firstName(c), anon: k.anon };
 }
 function questionHTML(c, p, k) {
   const fn = esc(firstName(c));
@@ -984,12 +1104,26 @@ function questionHTML(c, p, k) {
       <textarea id="c-note" rows="3" aria-label="Personal line" ${k.noteOn ? "" : "disabled"}>${esc(k.note)}</textarea>
       <label class="check"><input type="checkbox" id="c-noteon" ${k.noteOn ? "checked" : ""}> Include a personal line</label>`;
     default: {
-      const link = sheetLink(c.id, p.ref);
+      const link = sheetLink(c.id, p.ref), t = T[k.lang], f = firstName(c);
+      const file = p.title.split(",")[0].replace(/[^A-Za-z0-9]+/g, "-") + ".pdf";
       return `<h2>Send to ${fn}</h2>
-      <p class="muted">This goes from your own WhatsApp number. Opens and taps come back into the timeline.</p>
-      <div class="chat wa-preview"><div class="b out"><div>${esc(T[k.lang].msg(firstName(c), "https://" + link))}</div>
-        <div class="link-card">${photo(coverSeeds(p)[k.cover])}<div><b>${money(p.price)} · ${esc(p.area.split(",")[0])}</b><div class="muted">${link}</div></div></div>
-        <div class="ts">now</div></div></div>`;
+      <div class="send-opts">
+        <div class="label">Format</div>
+        <div class="opts">
+          <button class="opt" data-act="c-format" data-f="link" aria-pressed="${k.format === "link"}">Link to the sheet</button>
+          <button class="opt" data-act="c-format" data-f="pdf" aria-pressed="${k.format === "pdf"}" ${p.own ? "" : "disabled"}>PDF, A4</button>
+        </div>
+        ${p.own ? "" : `<p class="muted small">PDF is off for other agencies’ listings until Resales confirms its terms.</p>`}
+        <label class="check"><input type="checkbox" id="c-anon" ${k.anon ? "checked" : ""}> Send anonymously: no MLS reference, no agency name. Area only, never the address.</label>
+      </div>
+      <div class="chat wa-preview"><div class="b out">
+        ${k.format === "pdf"
+          ? `<div class="doc-bubble"><span class="doc-ic">PDF</span><div><b>${esc(file)}</b><div class="muted">2 pages · A4</div></div></div><div>${esc(t.pdfMsg(f))}</div>`
+          : `<div>${esc(t.msg(f, "https://" + link))}</div>
+        <div class="link-card">${photo(coverSeeds(p)[k.cover])}<div><b>${money(p.price)} · ${esc(p.area.split(",")[0])}</b><div class="muted">${link}</div></div></div>`}
+        <div class="ts">now</div></div></div>
+      ${k.format === "pdf" ? `<div><a class="btn small" href="#pdf-${c.id}-${p.ref}">${ICON.eye} Preview PDF</a></div>` : ""}
+      <p class="muted small">Sent from your own WhatsApp number. Opens and taps come back into the timeline.</p>`;
     }
   }
 }
@@ -1001,13 +1135,14 @@ function renderCompose(cid, ref) {
   $main.innerHTML = `<div class="page">
     <div class="page-head"><div><a class="btn small" href="#client-${c.id}">${ICON.back} ${esc(c.name)}</a>
       <h1 style="margin-top:8px">Send sheet</h1><p>${esc(p.title)} · <span class="mono">${money(p.price)} · ${p.ref}</span></p></div></div>
+    ${p.own ? "" : `<div class="banner info">Another agency’s listing. Resales only allows showing network listings on your own website; we’re confirming whether this sheet counts.</div>`}
     <div class="compose">
       <section class="panel q-panel">
         <ol class="stepper">${STEPS.map((st, i) => `<li class="${i === k.step ? "on" : i < k.step ? "done" : ""}"><button data-act="c-goto" data-i="${i}" ${i > k.step ? "disabled" : ""}>${i < last ? i + 1 : ICON.check}<span>${st}</span></button></li>`).join("")}</ol>
         <div class="q">${questionHTML(c, p, k)}</div>
         <div class="q-nav">
           ${k.step > 0 ? `<button class="btn" data-act="c-back">Back</button>` : "<span></span>"}
-          ${k.step < last ? `<button class="btn primary" data-act="c-next">${k.step === last - 1 ? "Review" : "Next"}</button>`
+          ${k.step < last ? `<span class="q-nav-r">${k.step < last - 1 ? `<button class="btn" data-act="c-skip">Skip to review</button>` : ""}<button class="btn primary" data-act="c-next">${k.step === last - 1 ? "Review" : "Next"}</button></span>`
             : `<button class="btn wa" data-act="c-send" data-id="${c.id}" data-ref="${p.ref}">${ICON.wa} Send on WhatsApp</button>`}
         </div>
       </section>
@@ -1015,6 +1150,88 @@ function renderCompose(cid, ref) {
         <div class="phone"><div class="phone-screen" id="c-preview">${sheetHTML(p, composeOpts(c, k))}</div></div></div>
     </div></div>`;
 }
+
+// ---------- Listing PDF: same template, A4 ----------
+function pdfHTML(p, o) {
+  const t = T[o.lang], seeds = coverSeeds(p), cover = seeds[o.cover], rest = seeds.filter((_, i) => i !== o.cover);
+  const paras = describe(p, o.lang, o.hl);
+  return `<article class="a4">
+    <header class="a4-head"><div><div class="a4-price">${money(p.price)}</div><div class="a4-area">${esc(p.area)}</div></div>
+      ${o.forWho ? `<div class="a4-for">${esc(t.forWho(o.forWho))}</div>` : ""}</header>
+    ${photo(cover, "", "a4-cover")}
+    <div class="facts a4-facts"><div><b>${p.beds}</b><span>${t.beds}</span></div><div><b>${p.baths}</b><span>${t.baths}</span></div><div><b>${fmtNum(p.built, o.lang)}</b><span>${t.built}</span></div><div><b>${p.plot ? fmtNum(p.plot, o.lang) : "–"}</b><span>${t.plot}</span></div></div>
+    <div class="ms-hl">${o.hl.map(k => `<span>${esc(FEATURES[k][o.lang])}</span>`).join("")}</div>
+    <div class="a4-cols">
+      <div>${o.note ? `<div class="ms-note"><div class="ms-note-h">${esc(t.noteFrom(AGENT.name))}</div>${esc(o.note)}</div>` : ""}${paras.map(x => `<p>${esc(x)}</p>`).join("")}</div>
+      <div><dl class="ms-facts one">${keyFacts(p, o.lang).map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(String(v))}</dd></div>`).join("")}</dl>
+        <div class="ms-map">${mapSVG(p.area)}</div></div>
+    </div>
+    <div class="a4-photos">${rest.map(sd => photo(sd)).join("")}</div>
+    <footer class="a4-foot"><div class="avatar">J</div><div><b>${AGENT.name}</b>${o.anon ? "" : ` · ${esc(AGENT.agency)}`}<div>${AGENT.phone} · WhatsApp</div></div>
+      <div class="a4-small">${o.anon ? "" : `${t.ref} ${p.ref}<br>`}${esc(t.disc)}</div></footer>
+  </article>`;
+}
+function renderPdf(cid, ref) {
+  const c = C(cid), p = PROPS[ref] || (ref === NEW_PROP.ref ? NEW_PROP : null);
+  if (!c || !p) return renderHotlist(null);
+  if (!state.compose || state.compose.cid !== c.id || state.compose.ref !== p.ref) state.compose = startCompose(c, p);
+  $main.innerHTML = `<div class="page pdf-page">
+    <div class="page-head pdf-bar"><div><a class="btn small" href="#send-${c.id}-${p.ref}">${ICON.back} Back to sending</a>
+      <h1 style="margin-top:8px">Listing PDF</h1><p>Same template as the sheet, laid out for A4. In the live app the PDF is generated on the server and attached in WhatsApp.</p></div>
+      <button class="btn primary" data-act="print">Download PDF</button></div>
+    <div class="a4-wrap">${pdfHTML(p, composeOpts(c, state.compose))}</div></div>`;
+}
+
+// ---------- Overlays: reply drafts and search ----------
+function replyKind(c) {
+  const f = c.flags;
+  if (f.unanswered) return "answer";
+  if (f.silentAfterSend) return "nudge";
+  if (f.newMatch) return "match";
+  if (f.viewingNoFollowUp) return "feedback";
+  return "checkin";
+}
+function replyText(c, lang) {
+  const kind = replyKind(c), area = c.flags.newMatch ? PROPS[c.flags.newMatch].area.split(",")[0] : "";
+  return DRAFTS[lang][kind](firstName(c), area);
+}
+function searchResults(q) {
+  q = q.trim().toLowerCase();
+  const props = Object.values(PROPS).concat(state.listings.includes(NEW_PROP.ref) ? [] : []);
+  const cs = state.clients.filter(c => !q || c.name.toLowerCase().includes(q) || c.lang.toLowerCase().includes(q))
+    .map(c => ({ go: "client-" + c.id, html: `${avatar(c, "sm")}<span><b>${esc(c.name)}</b> <span class="muted">${stageName(c.stage)}</span></span>` }));
+  const ps = props.filter(p => !q || (p.title + " " + p.ref + " " + p.area).toLowerCase().includes(q))
+    .map(p => ({ go: "sheet-" + p.ref, html: `${photo(p.seed, "", "s-ph")}<span><b>${esc(p.title)}</b> <span class="muted mono">${p.ref} · ${money(p.price)}</span></span>` }));
+  return cs.slice(0, 5).concat(ps.slice(0, 5));
+}
+function searchList() {
+  const m = state.modal, res = searchResults(m.q);
+  m.i = Math.min(m.i, Math.max(res.length - 1, 0));
+  return res.length ? res.map((r, i) => `<button class="s-row" data-act="s-go" data-go="${r.go}" aria-selected="${i === m.i}">${r.html}</button>`).join("")
+    : `<div class="empty">Nothing found for “${esc(m.q)}”.</div>`;
+}
+function renderModal() {
+  const root = document.getElementById("modal-root"), m = state.modal;
+  if (!m) { root.innerHTML = ""; return; }
+  if (m.type === "search") {
+    root.innerHTML = `<div class="modal-bg" data-act="m-close"></div><div class="modal search" role="dialog" aria-label="Search">
+      <input id="s-q" type="search" placeholder="Search clients, properties, references…" value="${esc(m.q)}" autocomplete="off">
+      <div class="s-list" id="s-list">${searchList()}</div>
+      <div class="s-foot muted">↑ ↓ to move · Enter to open · Esc to close</div></div>`;
+    const inp = document.getElementById("s-q"); inp.focus(); inp.setSelectionRange(inp.value.length, inp.value.length);
+    return;
+  }
+  const c = C(m.cid), r = reasons(c)[0];
+  root.innerHTML = `<div class="modal-bg" data-act="m-close"></div><div class="modal" role="dialog" aria-label="Reply to ${esc(c.name)}">
+    <div class="who">${avatar(c)}<div><b>Reply to ${esc(c.name)}</b><div class="muted small">${r ? esc(r.text) : ""}${c.flags.unanswered ? ` · “${esc(c.flags.unanswered.text)}”` : ""}</div></div></div>
+    <div class="opts">${Object.entries(LANGS).map(([code, name]) => `<button class="opt small" data-act="r-lang" data-l="${code}" aria-pressed="${m.lang === code}">${name}</button>`).join("")}</div>
+    <textarea id="r-text" rows="5" aria-label="Message">${esc(m.text)}</textarea>
+    <p class="muted small">A draft in ${esc(firstName(c))}’s language. It opens in your own WhatsApp; you check it and press send.</p>
+    <div class="modal-actions"><button class="btn" data-act="m-close">Cancel</button><button class="btn" data-act="r-copy">Copy</button>
+      <a class="btn wa" id="r-open" data-act="r-open" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(m.text)}">${ICON.wa} Open in WhatsApp</a></div>
+  </div>`;
+}
+function closeModal() { state.modal = null; renderModal(); }
 
 // ---------- Add property (chat, not a form) ----------
 const ADD_QS = [
@@ -1140,6 +1357,7 @@ function route() {
   else if (h === "listings") renderListings();
   else if (h.startsWith("sheet-")) renderSheet(h.slice(6));
   else if (h.startsWith("send-")) { const [, cid, ref] = h.split("-"); renderCompose(cid, ref); }
+  else if (h.startsWith("pdf-")) { const [, cid, ref] = h.split("-"); renderPdf(cid, ref); }
   else if (h === "add") renderAdd();
   else if (h === "live") renderLive();
   else renderHotlist(null);
@@ -1158,11 +1376,11 @@ function toast(msg) {
 document.addEventListener("click", e => {
   const el = e.target.closest("[data-act],[data-go]");
   if (!el) return;
-  if (el.dataset.go && !el.dataset.act) { state.editing = null; return go(el.dataset.go); }
+  if (el.dataset.go && !el.dataset.act) { if (el.dataset.justSwiped) return; state.editing = null; state.snoozeOpen = null; return go(el.dataset.go); }
   const a = el.dataset.act, id = el.dataset.id, c = id && C(id);
-  if (el.tagName === "A" && a) e.preventDefault();
+  if (el.tagName === "A" && a && a !== "r-open") e.preventDefault();
   switch (a) {
-    case "reset": state = { ...state, clients: seedClients(), handled: seedHandled(), listings: ["R4512345", "R4601877"], sim: 0, sentLog: [], add: { step: 0, answers: [] }, compose: null, editing: null }; toast("Demo reset"); route(); break;
+    case "reset": state = { ...state, clients: seedClients(), handled: seedHandled(), listings: ["R4512345", "R4601877"], sim: 0, sentLog: [], add: { step: 0, answers: [] }, compose: null, editing: null, modal: null, snoozeOpen: null, wa: { appOpenedDaysAgo: 11, dismissed: false } }; renderModal(); toast("Demo reset"); route(); break;
     case "done":
       c.tl.unshift({ at: "2026-10-28T10:30", src: "sys", what: "Done: " + c.next.text, q: "" });
       c.next = null; if (c.flags.viewingNoFollowUp) delete c.flags.viewingNoFollowUp;
@@ -1183,6 +1401,38 @@ document.addEventListener("click", e => {
       const t = c.tl[+el.dataset.i]; t.what = document.getElementById("fix-type").value + (t.what.includes("·") ? " ·" + t.what.split("·").slice(1).join("·") : ""); t.corrected = true;
       toast("Corrected. Saved as training data."); edit(null); break; }
     case "send": go(`send-${id}-${el.dataset.ref}`); break;
+    case "q-done": {
+      const nextDate = addDays(3);
+      c.tl.unshift({ at: "2026-10-28T10:30", src: "sys", what: "Done: " + (c.next ? c.next.text : reasons(c)[0].text), q: "" });
+      ["unanswered", "silentAfterSend", "newMatch", "viewingNoFollowUp"].forEach(f => delete c.flags[f]);
+      c.next = { text: `Check in with ${firstName(c)}`, date: nextDate, owner: "agent", ev: "Set automatically after Done. Change it any time." };
+      state.handled.unshift({ at: "2026-10-28T10:30", text: `<b>${esc(c.name)}</b> marked done`, sub: `Next check-in ${fmtDay(nextDate)}` });
+      toast(`Done. Next check-in ${fmtDay(nextDate)}.`); rerender(); break; }
+    case "q-snooze": state.snoozeOpen = id; rerender(); break;
+    case "q-snooze-cancel": state.snoozeOpen = null; rerender(); break;
+    case "q-snooze-to": {
+      c.snooze = addDays(+el.dataset.days); state.snoozeOpen = null;
+      state.handled.unshift({ at: "2026-10-28T10:30", text: `<b>${esc(c.name)}</b> snoozed`, sub: `Back on the hotlist ${fmtDay(c.snooze)}` });
+      toast(`${c.name} snoozed until ${fmtDay(c.snooze)}`); rerender(); break; }
+    case "q-reply": { const lang = langFor(c); state.modal = { type: "reply", cid: id, lang, text: replyText(c, lang) }; renderModal(); break; }
+    case "r-lang": { const m = state.modal; m.lang = el.dataset.l; m.text = replyText(C(m.cid), m.lang); renderModal(); break; }
+    case "r-copy": {
+      const text = document.getElementById("r-text").value;
+      (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject()).then(() => toast("Copied"), () => { document.getElementById("r-text").select(); toast("Selected. Copy with ⌘C."); });
+      break; }
+    case "r-open": {
+      const cl = C(state.modal.cid);
+      ["unanswered", "silentAfterSend", "viewingNoFollowUp"].forEach(f => delete cl.flags[f]);
+      cl.tl.unshift({ at: "2026-10-28T10:30", src: "wa", what: "Replied on WhatsApp", q: "Jonathan: “" + state.modal.text.slice(0, 80) + (state.modal.text.length > 80 ? "…”" : "”") });
+      if (!cl.next) cl.next = { text: `Wait for ${firstName(cl)}’s reply`, date: addDays(2), owner: "client", ev: "Set after your reply" };
+      closeModal(); toast(`Reply logged for ${cl.name}`); rerender(); break; }
+    case "m-close": closeModal(); break;
+    case "search": state.modal = { type: "search", q: "", i: 0 }; renderModal(); break;
+    case "s-go": closeModal(); go(el.dataset.go); break;
+    case "wa-ok": state.wa.dismissed = true; rerender(); break;
+    case "c-skip": state.compose.step = STEPS.length - 1; rerender(); break;
+    case "c-format": state.compose.format = el.dataset.f; rerender(); break;
+    case "print": window.print(); break;
     case "c-lang": { const k = state.compose; k.lang = el.dataset.l; if (!k.noteEdited) k.note = T[k.lang].note(firstName(C(k.cid))); rerender(); break; }
     case "c-hl": {
       const k = state.compose, f = el.dataset.k;
@@ -1195,9 +1445,9 @@ document.addEventListener("click", e => {
     case "c-back": state.compose.step--; rerender(); break;
     case "c-goto": state.compose.step = +el.dataset.i; rerender(); break;
     case "c-send": {
-      const ref = el.dataset.ref, link = sheetLink(id, ref);
+      const ref = el.dataset.ref, link = sheetLink(id, ref), k = state.compose;
       state.sentLog.push(id + ref);
-      c.tl.unshift({ at: "2026-10-28T10:30", src: "wa", what: "Sent sheet · " + ref, q: `${LANGS[state.compose.lang]} · ${link}` });
+      c.tl.unshift({ at: "2026-10-28T10:30", src: "wa", what: (k.format === "pdf" ? "Sent PDF · " : "Sent sheet · ") + ref + (k.anon ? " (anonymous)" : ""), q: `${LANGS[k.lang]} · ${k.format === "pdf" ? "PDF, A4" : link}` });
       if (c.flags.newMatch === ref) delete c.flags.newMatch;
       state.compose = null;
       toast(`Sheet sent to ${c.name} on WhatsApp`); go("client-" + id); break; }
@@ -1224,13 +1474,44 @@ document.addEventListener("click", e => {
 document.addEventListener("change", e => {
   if (e.target.id === "horizon") { state.horizon = +e.target.value; route(); }
   if (e.target.id === "c-noteon") { state.compose.noteOn = e.target.checked; rerender(); }
+  if (e.target.id === "c-anon") { state.compose.anon = e.target.checked; rerender(); }
 });
 document.addEventListener("input", e => {
+  if (e.target.id === "s-q") { state.modal.q = e.target.value; state.modal.i = 0; document.getElementById("s-list").innerHTML = searchList(); return; }
+  if (e.target.id === "r-text") { state.modal.text = e.target.value; document.getElementById("r-open").href = "https://wa.me/?text=" + encodeURIComponent(e.target.value); return; }
   if (e.target.id !== "c-note" || !state.compose) return;
   const k = state.compose; k.note = e.target.value; k.noteEdited = true;
   document.getElementById("c-preview").innerHTML = sheetHTML(PROPS[k.ref] || NEW_PROP, composeOpts(C(k.cid), k));
 });
-document.addEventListener("keydown", e => { if (e.key === "Enter" && e.target.matches(".card[data-go]")) go(e.target.dataset.go); });
+document.addEventListener("keydown", e => {
+  if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") { e.preventDefault(); state.modal = { type: "search", q: "", i: 0 }; renderModal(); return; }
+  if (state.modal) {
+    if (e.key === "Escape") return closeModal();
+    if (state.modal.type === "search" && ["ArrowDown", "ArrowUp", "Enter"].includes(e.key)) {
+      e.preventDefault();
+      const rows = document.querySelectorAll(".s-row");
+      if (e.key === "Enter") { if (rows[state.modal.i]) { const g = rows[state.modal.i].dataset.go; closeModal(); go(g); } return; }
+      state.modal.i = Math.max(0, Math.min(rows.length - 1, state.modal.i + (e.key === "ArrowDown" ? 1 : -1)));
+      document.getElementById("s-list").innerHTML = searchList();
+    }
+    return;
+  }
+  if (e.key === "Enter" && e.target.matches(".card[data-go], .row[data-go]") && !e.target.closest("[data-act]")) go(e.target.dataset.go);
+});
+
+// Swipe left on a hotlist row (phones) to show its quick actions
+let swipe = null;
+document.addEventListener("touchstart", e => { const r = e.target.closest(".row[data-swipe]"); swipe = r ? { r, x: e.touches[0].clientX, y: e.touches[0].clientY } : null; }, { passive: true });
+document.addEventListener("touchend", e => {
+  if (!swipe) return;
+  const dx = e.changedTouches[0].clientX - swipe.x, dy = e.changedTouches[0].clientY - swipe.y;
+  if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) {
+    document.querySelectorAll(".row.swiped").forEach(x => x !== swipe.r && x.classList.remove("swiped"));
+    swipe.r.classList.toggle("swiped", dx < 0);
+    swipe.r.dataset.justSwiped = "1"; setTimeout(() => delete swipe?.r?.dataset.justSwiped, 300);
+  }
+  swipe = null;
+});
 
 // Funnel drag and drop (desktop)
 document.addEventListener("dragstart", e => { const card = e.target.closest(".card"); if (card) e.dataTransfer.setData("text/plain", card.dataset.id); });
