@@ -313,6 +313,23 @@ main > * { animation: fadein .18s ease-out; }
 @keyframes fadein { from { opacity: .6; transform: translateY(4px); } }
 @media (prefers-reduced-motion: reduce) { main > * { animation: none; } .card:hover { transform: none; } }
 
+/* Morning brief */
+.brief { margin: 12px 16px 4px; background: var(--surface); border-radius: 16px; box-shadow: var(--shadow); padding: 14px 16px; display: grid; gap: 10px; }
+.brief-head { display: flex; justify-content: space-between; align-items: center; }
+.brief-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; counter-reset: b; }
+.brief-list li { display: grid; grid-template-columns: 20px minmax(0, 1fr) auto; align-items: center; gap: 10px; counter-increment: b; }
+.brief-list li::before { content: counter(b); width: 20px; height: 20px; border-radius: 50%; background: var(--accent); color: var(--accent-ink); font-size: 11px; font-weight: 700; display: grid; place-items: center; flex: none; }
+.brief-txt { min-width: 0; display: flex; align-items: center; gap: 8px; border: 0; background: none; text-align: left; padding: 4px 0; font-weight: 500; }
+.brief-txt span:last-child { line-height: 1.35; }
+.brief-txt .av { flex: none; }
+.brief-list .btn { flex: none; }
+.brief-empty { color: var(--muted); font-size: 13px; }
+.brief-foot { font-size: 12px; color: var(--muted); }
+.brief-wa { font-size: 11.5px; color: var(--muted); display: flex; align-items: center; gap: 6px; border-top: 1px solid var(--line); padding-top: 8px; }
+.brief-wa svg { width: 13px; height: 13px; color: var(--wa); }
+.row .why { font-size: 12.5px; color: var(--muted); }
+.row[aria-current="true"] .why { color: var(--ink); }
+
 /* Quick actions, overlays, PDF */
 .row { position: relative; cursor: pointer; }
 .row-acts { grid-column: 1 / -1; display: none; gap: 6px; flex-wrap: wrap; align-items: center; padding: 8px 0 2px 40px; }
@@ -706,7 +723,8 @@ function keyFacts(p, lang) {
   return [[f[0], p.reno ? `${p.year} · ${p.reno}` : p.year], [f[1], ORIENT[p.orient][lang]], [f[2], p.parking], [f[3], p.energy],
     [f[4], `${money(p.ibi)} ${t.yr}`], [f[5], p.comm ? `${money(p.comm)} ${t.mo}` : t.none]];
 }
-const firstName = c => c.name.split(" ").slice(0, -1).join(" ") || c.name;
+// "Anna & Erik Lindqvist" -> "Anna & Erik", "Sophie van Dijk" -> "Sophie", "Mark Davies" -> "Mark"
+const firstName = c => { const w = c.name.split(" "); const i = w.findIndex((x, k) => k > 0 && (/^[a-z]/.test(x) && !["&"].includes(x) || k === w.length - 1)); return (i > 0 ? w.slice(0, i) : w.slice(0, -1)).join(" ") || c.name; };
 const langFor = c => ({ Swedish: "sv", Dutch: "nl", Spanish: "es", German: "de" }[c.lang.split(" ")[0]] || "en");
 const sheetLink = (cid, ref) => "sheet.homes/" + (cid + ref).split("").reduce((h, ch) => (h * 31 + ch.charCodeAt(0)) >>> 0, 7).toString(36).slice(0, 6);
 const coverSeeds = p => [p.seed, (p.seed + 2) % 6, 6 + p.seed % 6, 6 + (p.seed + 3) % 6];
@@ -814,6 +832,28 @@ function seedHandled() {
 let state = { clients: seedClients(), handled: seedHandled(), horizon: 7, listings: ["R4512345", "R4601877"], sim: 0, sentLog: [], add: { step: 0, answers: [] }, sheetLang: "en", editing: null, modal: null, snoozeOpen: null, wa: { appOpenedDaysAgo: 11, dismissed: false } };
 const C = id => state.clients.find(c => c.id === id);
 
+// ---------- Suggested next step: what an agent would do next, by stage ----------
+function suggestNext(c) {
+  const f = firstName(c);
+  switch (c.stage) {
+    case "new_lead": return c.role === "seller"
+      ? { text: `Send ${f} the mandate agreement`, days: 1, owner: "agent" }
+      : { text: `Ask ${f} what they’re looking for and when they’re here`, days: 1, owner: "agent" };
+    case "searching": return { text: `Send ${f} 2–3 properties`, days: 2, owner: "agent" };
+    case "viewing": return { text: `Ask ${f} what they thought and whether to make an offer`, days: 2, owner: "agent" };
+    case "offer": return { text: `Seller’s answer on ${f}’s offer`, days: 2, owner: "other" };
+    case "reservation": return { text: `Lawyer sends ${f} the arras draft`, days: 5, owner: "other" };
+    case "arras": return { text: `Confirm the notary date with ${f}`, days: 7, owner: "other" };
+    case "parked": return { text: `Check in with ${f}`, days: 60, owner: "agent" };
+    default: return { text: `Check in with ${f}`, days: 3, owner: "agent" };
+  }
+}
+function applySuggested(c) {
+  const sg = suggestNext(c);
+  c.next = { text: sg.text, date: addDays(sg.days), owner: sg.owner, ev: "Suggested from the stage. Change it any time.", suggested: true };
+  return c.next;
+}
+
 // ---------- Hotlist rules ----------
 const ACTIVE = new Set(["new_lead", "searching", "viewing", "offer", "reservation", "arras"]);
 function reasons(c) {
@@ -881,10 +921,9 @@ function renderRail(route) {
 function rowHTML(c, r, selected) {
   const top = r[0], snoozing = state.snoozeOpen === c.id;
   return `<div class="row" role="button" tabindex="0" data-go="client-${c.id}" data-swipe="${c.id}" aria-current="${selected === c.id}">
-    <div class="name">${avatar(c)}<span>${esc(c.name)}</span><span>${c.flag}</span></div>
-    <div class="mono muted" style="font-size:12px">${c.next ? fmtDay(c.next.date) : "–"}</div>
-    <div class="why">${esc(top.text)}</div>
-    <div class="meta"><span class="pill">${stageName(c.stage)}</span>${r.length > 1 ? `<span>+${r.length - 1} more</span>` : ""}${top.detail ? `<span>${esc(top.detail)}</span>` : ""}</div>
+    <div class="name">${avatar(c)}<span>${esc(c.name)}</span></div>
+    <div class="mono muted" style="font-size:12px">${c.next ? fmtDay(c.next.date) : ""}</div>
+    <div class="why">${esc(top.text)}${r.length > 1 ? `<span class="muted"> · +${r.length - 1}</span>` : ""}</div>
     <div class="row-acts ${snoozing ? "open" : ""}">${snoozing
       ? `<span class="muted" style="font-size:12px">Snooze until</span>
          <button class="btn small" data-act="q-snooze-to" data-id="${c.id}" data-days="1">Tomorrow</button>
@@ -897,11 +936,39 @@ function rowHTML(c, r, selected) {
   </div>`;
 }
 
+// Today's three: what the agent should do first, in plain words.
+function briefLine(c) {
+  const f = c.flags, n = firstName(c);
+  if (f.unanswered) return { c, text: `Answer ${n}: “${f.unanswered.text}”`, act: "q-reply" };
+  if (f.viewingNoFollowUp) return { c, text: `Ask ${n} what they thought of Saturday’s viewing`, act: "q-reply" };
+  if (f.silentAfterSend) return { c, text: `Nudge ${n}, silent ${f.silentAfterSend} days after your properties`, act: "q-reply" };
+  if (f.newMatch) return { c, text: `Send ${n} the new match in ${PROPS[f.newMatch].area.split(",")[0]}`, go: `send-${c.id}-${f.newMatch}` };
+  if (c.next && daysBetween(NOW, c.next.date) < 0) return { c, text: `${c.next.text} (overdue)`, act: "q-done" };
+  if (c.next && daysBetween(NOW, c.next.date) === 0) return { c, text: c.next.text, act: "q-done" };
+  if (!c.next) return { c, text: `Set a next step for ${n}`, go: `client-${c.id}` };
+  return null;
+}
+function briefHTML(g) {
+  const todo = g.needs.map(([c]) => briefLine(c)).filter(Boolean);
+  const later = g.coming.filter(([c]) => c.next && daysBetween(NOW, c.next.date) <= 1).map(([c]) => c);
+  const top = todo.slice(0, 3), rest = todo.length - top.length;
+  return `<section class="brief">
+    <div class="brief-head"><div class="label">${fmtDay(iso(NOW))} · Your three</div><span class="muted small">${todo.length ? `${todo.length} on you` : "Nothing on you"}</span></div>
+    ${top.length ? `<ol class="brief-list">${top.map(b => `<li>
+        <button class="brief-txt" data-go="client-${b.c.id}">${avatar(b.c, "sm")}<span>${esc(b.text)}</span></button>
+        ${b.act ? `<button class="btn small ${b.act === "q-reply" ? "wa" : "primary"}" data-act="${b.act}" data-id="${b.c.id}">${b.act === "q-reply" ? ICON.wa + " Reply" : ICON.check + " Done"}</button>` : `<a class="btn small primary" href="#${b.go}">Open</a>`}
+      </li>`).join("")}</ol>` : `<div class="brief-empty">All quiet. Enjoy the sun.</div>`}
+    ${rest > 0 || later.length ? `<div class="brief-foot">${rest > 0 ? `+${rest} more below` : ""}${rest > 0 && later.length ? " · " : ""}${later.length ? `Tomorrow: ${later.map(c => esc(firstName(c))).join(", ")}` : ""}</div>` : ""}
+    <div class="brief-wa">${ICON.wa} Sent to your WhatsApp every morning at 08:00</div>
+  </section>`;
+}
+
 function renderHotlist(selected) {
   const g = hotGroups();
   const list = `
     ${waWarn() && !state.wa.dismissed ? `<div class="banner warn"><b>Open WhatsApp Business on your phone within ${14 - state.wa.appOpenedDaysAgo} days.</b> WhatsApp disconnects the CRM if the phone app isn’t opened for about 14 days. <button class="linkbtn" data-act="wa-ok">Got it</button></div>` : ""}
     <div class="page-head"><div><h1>Hotlist</h1><p>Who needs you, from your WhatsApp.</p></div><button class="btn small m-only" data-act="search">${ICON.search} Search</button></div>
+    ${briefHTML(g)}
     <p class="hint m-only">Swipe left on a row for Done, Snooze and Reply.</p>
     <div class="horizon"><label for="horizon">Show next steps within</label>
       <select id="horizon">${[3, 7, 14].map(n => `<option value="${n}" ${state.horizon === n ? "selected" : ""}>${n} days</option>`).join("")}</select></div>
@@ -942,11 +1009,13 @@ function clientHTML(c) {
       ${c.next ? `
         <div class="next-main"><h2>${esc(c.next.text)}</h2>
           <div class="when"><b>${fmtDay(c.next.date)}</b> · ${{ agent: "on you", client: "waiting on client", other: "waiting on third party" }[c.next.owner]}</div></div>
-        <div class="ev">From: ${esc(c.next.ev)}</div>` : `<div class="next-main"><h2 style="color:var(--red)">No next step set</h2></div>`}
+        <div class="ev">${c.next.suggested ? `<span class="pill accent">Suggested</span> ${esc(c.next.ev)}` : `From: ${esc(c.next.ev)}`}</div>` : `<div class="next-main"><h2 style="color:var(--red)">No next step set</h2></div>
+        <div class="ev">Suggestion: <b>${esc(suggestNext(c).text)}</b>, ${fmtDay(addDays(suggestNext(c).days))}</div>`}
       ${editingNext ? nextForm(c) : moving ? moveForm(c) : `
       <div class="next-actions">
         ${c.next ? `<button class="btn primary" data-act="done" data-id="${c.id}">${ICON.check} Done</button>` : ""}
-        <button class="btn" data-act="edit-next" data-id="${c.id}">${c.next ? "Change" : "Set next step"}</button>
+        ${c.next ? "" : `<button class="btn primary" data-act="use-suggest" data-id="${c.id}">${ICON.check} Use suggestion</button>`}
+        <button class="btn" data-act="edit-next" data-id="${c.id}">${c.next ? "Change" : "Write my own"}</button>
         <button class="btn" data-act="move" data-id="${c.id}">Move stage</button>
       </div>`}
     </section>
@@ -994,7 +1063,7 @@ function tlHTML(c, t, i) {
 
 function nextForm(c) {
   return `<div class="inline-form"><div class="f">
-      <input type="text" id="next-text" aria-label="Next step" placeholder="What happens next?" value="${c.next ? esc(c.next.text) : ""}">
+      <input type="text" id="next-text" aria-label="Next step" placeholder="What happens next?" value="${c.next ? esc(c.next.text) : esc(suggestNext(c).text)}">
       <input type="date" id="next-date" aria-label="Date" value="${c.next ? c.next.date : addDays(1)}">
       <select id="next-owner" aria-label="Who acts"><option value="agent">On me</option><option value="client">Waiting on client</option><option value="other">Waiting on third party</option></select></div>
     <div class="f"><button class="btn small primary" data-act="next-save" data-id="${c.id}">Save</button><button class="btn small" data-act="cancel">Cancel</button></div></div>`;
@@ -1381,11 +1450,13 @@ document.addEventListener("click", e => {
   if (el.tagName === "A" && a && a !== "r-open") e.preventDefault();
   switch (a) {
     case "reset": state = { ...state, clients: seedClients(), handled: seedHandled(), listings: ["R4512345", "R4601877"], sim: 0, sentLog: [], add: { step: 0, answers: [] }, compose: null, editing: null, modal: null, snoozeOpen: null, wa: { appOpenedDaysAgo: 11, dismissed: false } }; renderModal(); toast("Demo reset"); route(); break;
-    case "done":
+    case "done": {
       c.tl.unshift({ at: "2026-10-28T10:30", src: "sys", what: "Done: " + c.next.text, q: "" });
-      c.next = null; if (c.flags.viewingNoFollowUp) delete c.flags.viewingNoFollowUp;
-      toast("Marked done. Set the next step."); edit("next-" + id); break;
+      ["unanswered", "silentAfterSend", "newMatch", "viewingNoFollowUp"].forEach(f => delete c.flags[f]);
+      const n = applySuggested(c);
+      toast(`Done. Next: ${n.text}, ${fmtDay(n.date)}.`); rerender(); break; }
     case "edit-next": edit("next-" + id); break;
+    case "use-suggest": { const n = applySuggested(c); toast(`Next: ${n.text}, ${fmtDay(n.date)}.`); rerender(); break; }
     case "move": edit("move-" + id); break;
     case "cancel": edit(null); break;
     case "next-save": {
@@ -1393,21 +1464,21 @@ document.addEventListener("click", e => {
       if (!text) { toast("Write what happens next first."); break; }
       c.next = { text, date: document.getElementById("next-date").value || addDays(1), owner: document.getElementById("next-owner").value, ev: "Set by you" };
       toast("Next step saved"); edit(null); break; }
-    case "move-to":
+    case "move-to": {
       c.stage = el.dataset.stage; c.tl.unshift({ at: "2026-10-28T10:30", src: "sys", what: "Moved to " + stageName(c.stage), q: "" });
-      toast(`Moved to ${stageName(c.stage)}`); edit(null); break;
+      const n = applySuggested(c);
+      toast(`Moved to ${stageName(c.stage)}. Next: ${n.text}.`); edit(null); break; }
     case "fix": edit(`tl-${id}-${el.dataset.i}`); break;
     case "fix-save": {
       const t = c.tl[+el.dataset.i]; t.what = document.getElementById("fix-type").value + (t.what.includes("·") ? " ·" + t.what.split("·").slice(1).join("·") : ""); t.corrected = true;
       toast("Corrected. Saved as training data."); edit(null); break; }
     case "send": go(`send-${id}-${el.dataset.ref}`); break;
     case "q-done": {
-      const nextDate = addDays(3);
       c.tl.unshift({ at: "2026-10-28T10:30", src: "sys", what: "Done: " + (c.next ? c.next.text : reasons(c)[0].text), q: "" });
       ["unanswered", "silentAfterSend", "newMatch", "viewingNoFollowUp"].forEach(f => delete c.flags[f]);
-      c.next = { text: `Check in with ${firstName(c)}`, date: nextDate, owner: "agent", ev: "Set automatically after Done. Change it any time." };
-      state.handled.unshift({ at: "2026-10-28T10:30", text: `<b>${esc(c.name)}</b> marked done`, sub: `Next check-in ${fmtDay(nextDate)}` });
-      toast(`Done. Next check-in ${fmtDay(nextDate)}.`); rerender(); break; }
+      const n = applySuggested(c);
+      state.handled.unshift({ at: "2026-10-28T10:30", text: `<b>${esc(c.name)}</b> marked done`, sub: `Next: ${n.text}, ${fmtDay(n.date)}` });
+      toast(`Done. Next: ${n.text}, ${fmtDay(n.date)}.`); rerender(); break; }
     case "q-snooze": state.snoozeOpen = id; rerender(); break;
     case "q-snooze-cancel": state.snoozeOpen = null; rerender(); break;
     case "q-snooze-to": {
